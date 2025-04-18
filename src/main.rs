@@ -1,5 +1,12 @@
 //! Load first CLI argument as a path. Fallback to hardcoded file if no CLI argument is provided.
 
+mod image_size;
+mod writer;
+mod logger;
+use image_size::ImageSize;
+use writer::write_png;
+use crate::logger::{Logger, TimedLogger};
+
 use blitz_dom::net::Resource;
 use blitz_html::HtmlDocument;
 use blitz_net::{MpscCallback, Provider};
@@ -10,14 +17,15 @@ use blitz_traits::{ColorScheme, Viewport};
 use std::sync::Arc;
 use std::{
     fs::File,
-    io::Write,
     path::{Path, PathBuf},
-    time::Instant,
 };
+
+//struct Himg {
+//}
 
 #[tokio::main]
 async fn main() {
-    let mut timer = Timer::init();
+    let mut logger = TimedLogger::init();
 
     let path_string = std::env::args()
         .skip(1)
@@ -29,33 +37,32 @@ async fn main() {
     // Assert that path is valid
     // TODO
 
-    // Fetch HTML from URL
+    // Fetch HTML from path
     let file_content = std::fs::read(path_string.clone()).unwrap();
     let base_url = format!("file://{}", path_string.clone());
     let html = String::from_utf8(file_content).unwrap();
-    timer.time("Fetched HTML");
+    logger.log("Fetched HTML");
 
-    // Setup viewport. TODO: make configurable.
-    let scale = 2;
-    let height = 800;
-    let width: u32 = std::env::args()
-        .skip(2)
-        .next()
-        .and_then(|arg| arg.parse().ok())
-        .unwrap_or(1200);
-
-    timer.time("Setup width/height");
+    let himg = ImageSize {
+        width: 1200,
+        height: 800,
+        hidpi_scale: 1.0,
+    };
 
     let (mut recv, callback) = MpscCallback::new();
-    timer.time("Setup MpscCallback");
+    logger.log("Initial config");
+
+    //let start = std::time::Instant::now();
+    //let client = reqwest::Client::new();
+    //println!("Client init took {:?}", start.elapsed());
 
     let callback = Arc::new(callback);
     let net = Arc::new(Provider::new(callback));
-    timer.time("Setup blitz-net Provider");
+    logger.log("Setup blitz-net Provider");
 
     let navigation_provider = Arc::new(DummyNavigationProvider);
 
-    timer.time("Setup dummy navigation provider");
+    logger.log("Setup dummy navigation provider");
 
     // Create HtmlDocument
     let mut document = HtmlDocument::from_html(
@@ -67,12 +74,16 @@ async fn main() {
         navigation_provider,
     );
 
-    timer.time("Parsed document");
+    logger.log("Parsed document");
+
+    let scaled_width = (himg.width as f64 * himg.hidpi_scale as f64) as u32;
+    let scaled_height = (himg.height as f64 * himg.hidpi_scale as f64) as u32;
+    let scale = himg.hidpi_scale as f32;
 
     document.as_mut().set_viewport(Viewport::new(
-        width * scale,
-        height * scale,
-        scale as f32,
+        scaled_width,
+        scaled_height,
+        scale,
         ColorScheme::Light,
     ));
 
@@ -83,64 +94,45 @@ async fn main() {
         document.as_mut().load_resource(res);
     }
 
-    timer.time("Fetched assets");
+    logger.log("Fetched assets");
 
     // Compute style, layout, etc for HtmlDocument
     document.as_mut().resolve();
 
-    timer.time("Resolved styles and layout");
+    logger.log("Resolved styles and layout");
 
     // Determine height to render
     let computed_height = document.as_ref().root_element().final_layout.size.height;
-    let render_height = (computed_height as u32).max(height).min(4000);
+    let render_height = (computed_height as u32).max(himg.height).min(4000);
+    let scaled_render_height = (render_height as f64 * himg.hidpi_scale as f64) as u32;
 
     // Render document to RGBA buffer
     let buffer = render_to_buffer(
         document.as_ref(),
         Viewport::new(
-            width * scale,
-            render_height * scale,
-            scale as f32,
+            scaled_width,
+            scaled_render_height,
+            himg.hidpi_scale,
             ColorScheme::Light,
         ),
     )
     .await;
 
-    timer.time("Rendered to buffer");
+    logger.log("Rendered to buffer");
 
     // Determine output path, and open a file at that path. TODO: make configurable.
     let out_path = compute_filename(&path_string);
     let mut file = File::create(&out_path).unwrap();
 
     // Encode buffer as PNG and write it to a file
-    write_png(&mut file, &buffer, width * scale, render_height * scale);
+    write_png(&mut file, &buffer, scaled_width, scaled_render_height);
 
-    timer.time("Wrote out png");
+    logger.log("Wrote out png");
 
     // Log result.
-    timer.total_time("\nDone");
-    println!("Screenshot is ({width}x{render_height})");
+    logger.log_total_time("\nDone");
+    println!("Screenshot is ({scaled_width}x{scaled_render_height})");
     println!("Written to {}", out_path.display());
-}
-
-fn write_png<W: Write>(writer: W, buffer: &[u8], width: u32, height: u32) {
-    // Set pixels-per-meter. TODO: make configurable.
-    const PPM: u32 = (144.0 * 39.3701) as u32;
-
-    // Create PNG encoder
-    let mut encoder = png::Encoder::new(writer, width, height);
-    encoder.set_color(png::ColorType::Rgba);
-    encoder.set_depth(png::BitDepth::Eight);
-    encoder.set_pixel_dims(Some(png::PixelDimensions {
-        xppu: PPM,
-        yppu: PPM,
-        unit: png::Unit::Meter,
-    }));
-
-    // Write PNG data to writer
-    let mut writer = encoder.write_header().unwrap();
-    writer.write_image_data(&buffer).unwrap();
-    writer.finish().unwrap();
 }
 
 fn compute_filename(path_string: &str) -> PathBuf {
@@ -152,33 +144,3 @@ fn compute_filename(path_string: &str) -> PathBuf {
     out_dir.join(&base_path).with_extension("png")
 }
 
-struct Timer {
-    initial_time: Instant,
-    last_time: Instant,
-}
-
-impl Timer {
-    fn init() -> Self {
-        let time = Instant::now();
-        Self {
-            initial_time: time,
-            last_time: time,
-        }
-    }
-
-    fn time(&mut self, message: &str) {
-        let now = Instant::now();
-        let diff = (now - self.last_time).as_millis();
-        println!("{message} in {diff}ms");
-
-        self.last_time = now;
-    }
-
-    fn total_time(&mut self, message: &str) {
-        let now = Instant::now();
-        let diff = (now - self.initial_time).as_millis();
-        println!("{message} in {diff}ms");
-
-        self.last_time = now;
-    }
-}
