@@ -1,8 +1,11 @@
 [package]
-name = "flex-image-prototype"
-description = "ruby bindings to expose a blitz html->png pipeline"
+name = "himg"
 version = "0.0.1"
 edition = "2024"
+description = "ruby bindings to expose a blitz html->png pipeline"
+
+#[lib]
+#name = "himg"
 
 [dependencies]
 blitz-traits = { version = "0.1.0-alpha.1" }
@@ -13,6 +16,7 @@ blitz-html = { version = "0.1.0-alpha.1" }
 tokio = { version = "1.42", features =  ["rt-multi-thread", "macros"] }
 png = "0.17"
 
+#magnus
 #euclid = { workspace = true }
 #image = { workspace = true }
 #env_logger = "0.11"

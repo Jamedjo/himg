@@ -617,19 +617,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "flex-image-prototype"
-version = "0.0.1"
-dependencies = [
- "blitz-dom",
- "blitz-html",
- "blitz-net",
- "blitz-renderer-vello",
- "blitz-traits",
- "png",
- "tokio",
-]
-
-[[package]]
 name = "float-cmp"
 version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1020,6 +1007,19 @@ name = "hexf-parse"
 version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dfa686283ad6dd069f105e5ab091b04c62850d3e4cf5d67debad1933f55023df"
+
+[[package]]
+name = "himg"
+version = "0.0.1"
+dependencies = [
+ "blitz-dom",
+ "blitz-html",
+ "blitz-net",
+ "blitz-renderer-vello",
+ "blitz-traits",
+ "png",
+ "tokio",
+]
 
 [[package]]
 name = "html-escape"
