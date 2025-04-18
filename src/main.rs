@@ -3,18 +3,15 @@
 mod image_size;
 mod writer;
 mod logger;
-use image_size::ImageSize;
-use writer::write_png;
+mod options;
+mod html_to_png;
+use crate::html_to_png::html_to_png;
+use crate::image_size::ImageSize;
+use crate::writer::write_png;
 use crate::logger::{Logger, TimedLogger};
+use crate::options::Options;
 
-use blitz_dom::net::Resource;
-use blitz_html::HtmlDocument;
-use blitz_net::{MpscCallback, Provider};
-use blitz_renderer_vello::render_to_buffer;
-use blitz_traits::navigation::DummyNavigationProvider;
-use blitz_traits::net::SharedProvider;
-use blitz_traits::{ColorScheme, Viewport};
-use std::sync::Arc;
+use blitz_traits::{ColorScheme};
 use std::{
     fs::File,
     path::{Path, PathBuf},
@@ -43,95 +40,29 @@ async fn main() {
     let html = String::from_utf8(file_content).unwrap();
     logger.log("Fetched HTML");
 
-    let himg = ImageSize {
-        width: 1200,
-        height: 800,
-        hidpi_scale: 1.0,
+    let options = Options {
+        image_size: ImageSize {
+            width: 1200,
+            height: 800,
+            hidpi_scale: 1.0,
+        },
+        color_scheme: ColorScheme::Light,
+        allow_net_requests: true, //TODO: Implement using this
     };
 
-    let (mut recv, callback) = MpscCallback::new();
-    logger.log("Initial config");
-
-    //let start = std::time::Instant::now();
-    //let client = reqwest::Client::new();
-    //println!("Client init took {:?}", start.elapsed());
-
-    let callback = Arc::new(callback);
-    let net = Arc::new(Provider::new(callback));
-    logger.log("Setup blitz-net Provider");
-
-    let navigation_provider = Arc::new(DummyNavigationProvider);
-
-    logger.log("Setup dummy navigation provider");
-
-    // Create HtmlDocument
-    let mut document = HtmlDocument::from_html(
-        &html,
-        Some(base_url),
-        Vec::new(),
-        Arc::clone(&net) as SharedProvider<Resource>,
-        None,
-        navigation_provider,
-    );
-
-    logger.log("Parsed document");
-
-    let scaled_width = (himg.width as f64 * himg.hidpi_scale as f64) as u32;
-    let scaled_height = (himg.height as f64 * himg.hidpi_scale as f64) as u32;
-    let scale = himg.hidpi_scale as f32;
-
-    document.as_mut().set_viewport(Viewport::new(
-        scaled_width,
-        scaled_height,
-        scale,
-        ColorScheme::Light,
-    ));
-
-    while !net.is_empty() {
-        let Some((_, res)) = recv.recv().await else {
-            break;
-        };
-        document.as_mut().load_resource(res);
-    }
-
-    logger.log("Fetched assets");
-
-    // Compute style, layout, etc for HtmlDocument
-    document.as_mut().resolve();
-
-    logger.log("Resolved styles and layout");
-
-    // Determine height to render
-    let computed_height = document.as_ref().root_element().final_layout.size.height;
-    let render_height = (computed_height as u32).max(himg.height).min(4000);
-    let scaled_render_height = (render_height as f64 * himg.hidpi_scale as f64) as u32;
-
-    // Render document to RGBA buffer
-    let buffer = render_to_buffer(
-        document.as_ref(),
-        Viewport::new(
-            scaled_width,
-            scaled_render_height,
-            himg.hidpi_scale,
-            ColorScheme::Light,
-        ),
-    )
-    .await;
-
-    logger.log("Rendered to buffer");
+    let buffer = html_to_png(&html, base_url, options, &mut logger).await;
 
     // Determine output path, and open a file at that path. TODO: make configurable.
     let out_path = compute_filename(&path_string);
     let mut file = File::create(&out_path).unwrap();
 
     // Encode buffer as PNG and write it to a file
-    write_png(&mut file, &buffer, scaled_width, scaled_render_height);
+    write_png(&mut file, &buffer, options.image_size.scaled_width(), options.image_size.scaled_height());
 
     logger.log("Wrote out png");
 
     // Log result.
     logger.log_total_time("\nDone");
-    println!("Screenshot is ({scaled_width}x{scaled_render_height})");
     println!("Written to {}", out_path.display());
 }
 
