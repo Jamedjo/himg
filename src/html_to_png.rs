@@ -20,16 +20,11 @@ pub async fn html_to_png(
     let (mut recv, callback) = MpscCallback::new();
     logger.log("Initial config");
 
-    //let start = std::time::Instant::now();
-    //let client = reqwest::Client::new();
-    //println!("Client init took {:?}", start.elapsed());
-
     let callback = Arc::new(callback);
     let net = Arc::new(Provider::new(callback));
     logger.log("Setup blitz-net Provider");
 
     let navigation_provider = Arc::new(DummyNavigationProvider);
-
     logger.log("Setup dummy navigation provider");
 
     // Create HtmlDocument
@@ -41,15 +36,11 @@ pub async fn html_to_png(
         None,
         navigation_provider,
     );
-
     logger.log("Parsed document");
 
-    let scaled_width = options.image_size.scaled_width();
-    let scaled_height = options.image_size.scaled_height();
-
     document.as_mut().set_viewport(Viewport::new(
-        scaled_width,
-        scaled_height,
+        options.image_size.scaled_width(),
+        options.image_size.scaled_height(),
         options.image_size.hidpi_scale,
         options.color_scheme,
     ));
@@ -65,7 +56,6 @@ pub async fn html_to_png(
 
     // Compute style, layout, etc for HtmlDocument
     document.as_mut().resolve();
-
     logger.log("Resolved styles and layout");
 
     // Determine height to render
@@ -78,6 +68,7 @@ pub async fn html_to_png(
         ..options.image_size
         //hidpi_scale: options.image_size.hidpi_scale,
     };
+    logger.log("Calculated render dimensions from document");
 
     println!("Screenshot is ({}x{})",render_size.scaled_width(), render_size.scaled_height());
 
