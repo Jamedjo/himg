@@ -8,6 +8,14 @@ Uses rust libraries to do this in a fast, hopefully safe way.
 
 In Rails this will mean you can process user.himg.erb to display an image including data from a user's profile.
 
+## CAVEATS
+
+1. This is **alpha** software, don't expect it to work yet.
+2. Rendering requires a GPU. Awaiting CPU support in vello, which Canva may be working on.
+3. Performance needs tuning. Both in the underlaying blitz library and how data is passed between Rust and Ruby
+4. Network requests can be made: don't use this library with untrusted inputs.
+5. file:// URLs are resolved: this could expose files on your computer.
+
 ## Installation
 
 Install the gem and add to the application's Gemfile by executing:
