@@ -1,6 +1,6 @@
 //! Load first CLI argument as a path. Fallback to hardcoded file if no CLI argument is provided.
 
-use himg::{html_to_png, Options, ImageSize, write_png};
+use himg::{html_to_image, Options, ImageSize, write_png};
 use himg::logger::{Logger, TimedLogger};
 
 use blitz_traits::{ColorScheme};
@@ -36,7 +36,7 @@ async fn main() {
 
     // Render to Image
     let base_url = format!("file://{}", path_string.clone());
-    let buffer = html_to_png(&html, base_url, options, &mut logger).await;
+    let buffer = html_to_image(&html, Some(base_url), options, &mut logger).await;
 
     // Determine output path, and open a file at that path.
     let out_path = compute_filename(&path_string);

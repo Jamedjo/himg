@@ -6,13 +6,16 @@ RSpec.describe Himg do
   end
 
   it "converts HTML to an Image" do
-    expect(false).to eq(true)
+    png_data = Himg.render("<html></html>")
+    png_string = png_data.pack("C*")
+
+    expect(png_string).to start_with("\x89PNG\r\n\x1A\n".b)
   end
 
-  it "can call into Rust" do
-    result = Himg.hello("earth")
+  it "finishes writing the png" do
+    png_data = Himg.render("<html></html>")
+    png_string = png_data.pack("C*")
 
-    expect(result).to eq("Hello earth, from Rust!")
-
+    expect(png_string).to end_with("IEND\xAEB`\x82".b)
   end
 end

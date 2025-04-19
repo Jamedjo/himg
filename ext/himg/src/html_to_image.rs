@@ -11,9 +11,9 @@ use crate::image_size::ImageSize;
 use crate::logger::Logger;
 use crate::options::Options;
 
-pub async fn html_to_png(
+pub async fn html_to_image(
     html: &str,
-    base_url: String,
+    base_url: Option<String>,
     options: Options,
     logger: &mut dyn Logger,
 ) -> Vec<u8> {
@@ -30,7 +30,7 @@ pub async fn html_to_png(
     // Create HtmlDocument
     let mut document = HtmlDocument::from_html(
         &html,
-        Some(base_url),
+        base_url,
         Vec::new(),
         Arc::clone(&net) as SharedProvider<Resource>,
         None,

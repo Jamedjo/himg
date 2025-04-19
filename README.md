@@ -26,7 +26,17 @@ gem install UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
 
 ## Usage
 
-TODO: Write usage instructions here
+### Run from Ruby
+
+```ruby
+png = Himg.render("<html bgcolor='blue'></html>") 
+```
+
+### Run directly from the command line to output an image
+```bash
+bundle exec cargo run --example file
+bundle exec cargo run --example file -- path/to/file.html
+```
 
 ## Development
 
