@@ -1,15 +1,7 @@
 //! Load first CLI argument as a path. Fallback to hardcoded file if no CLI argument is provided.
 
-mod image_size;
-mod writer;
-mod logger;
-mod options;
-mod html_to_png;
-use crate::html_to_png::html_to_png;
-use crate::image_size::ImageSize;
-use crate::writer::write_png;
-use crate::logger::{Logger, TimedLogger};
-use crate::options::Options;
+use himg::{html_to_png, Options, ImageSize, write_png};
+use himg::logger::{Logger, TimedLogger};
 
 use blitz_traits::{ColorScheme};
 use std::{
@@ -24,7 +16,7 @@ async fn main() {
     let path_string = std::env::args()
         .skip(1)
         .next()
-        .unwrap_or_else(|| "/home/james/Software/blitz/examples/assets/github_profile_reduced.html".into());
+        .unwrap_or_else(|| "./ext/himg/examples/assets/github_profile.html".into());
     println!("Loading {}", path_string);
 
     // Fetch HTML from path

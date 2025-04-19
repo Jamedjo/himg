@@ -12,7 +12,8 @@
 *.a
 mkmf.log
 target/
-/output
+/ext/himg/output/*
+!/ext/himg/output/.gitkeep
 
 # rspec failure tracking
 .rspec_status

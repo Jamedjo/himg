@@ -1,3 +1,15 @@
+pub mod writer;
+pub mod image_size;
+pub mod html_to_png;
+pub mod logger;
+pub mod options;
+
+pub use html_to_png::html_to_png;
+pub use image_size::ImageSize;
+pub use options::Options;
+pub use writer::write_png;
+pub use logger::{Logger, TimedLogger};
+
 use magnus::{function, prelude::*, Error, Ruby};
 
 pub fn hello(subject: String) -> String {

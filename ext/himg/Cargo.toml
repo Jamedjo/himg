@@ -8,7 +8,8 @@ license = "MIT"
 publish = false
 
 [lib]
-crate-type = ["cdylib"]
+path = "src/lib.rs"
+crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 magnus = { version = "0.7.1" }
