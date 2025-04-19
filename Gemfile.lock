@@ -38,7 +38,6 @@ GEM
     ffi (1.17.2-x86-linux)
     ffi (1.17.2-x86-linux-musl)
     ffi (1.17.2-x86_64-darwin)
-    ffi (1.17.2-x86_64-linux)
     ffi (1.17.2-x86_64-linux-musl)
     fileutils (1.7.3)
     i18n (1.14.7)
