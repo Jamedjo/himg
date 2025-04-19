@@ -1,5 +1,5 @@
 PATH
-  remote: .
+  remote: ..
   specs:
     himg (0.0.1)
       rb_sys (~> 0.9)
