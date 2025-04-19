@@ -2227,9 +2227,9 @@ dependencies = [
 
 [[package]]
 name = "rb-sys"
-version = "0.9.111"
+version = "0.9.107"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "becea799ce051c16fb140be80f5e7cf781070f99ca099332383c2b17861249af"
+checksum = "56aaf81d9efc195606456e91896297ee5ab2002381539f8ed1ba6b4f2e467f3b"
 dependencies = [
  "rb-sys-build",
 ]
