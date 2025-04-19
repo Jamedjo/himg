@@ -16,5 +16,4 @@ end
 # Converts HTML to an Image for a minimal subset of HTML and CSS
 module Himg
   #class Error < StandardError; end
-  # Your code goes here...
 end
