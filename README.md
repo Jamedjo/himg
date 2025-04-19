@@ -1,8 +1,12 @@
 # Himg
 
-TODO: Delete this and the text below, and describe your gem
+Library for generating an image from HTML
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/himg`. To experiment with that code, run `bin/console` for an interactive prompt.
+Parses a minimal subset of HTML/CSS, fetches nested resources, renders an image on the GPU.
+
+Uses rust libraries to do this in a fast, hopefully safe way.
+
+In Rails this will mean you can process user.himg.erb to display an image including data from a user's profile.
 
 ## Installation
 
@@ -32,7 +36,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/himg.
+Bug reports and pull requests are welcome on GitHub at https://github.com/jamedjo/himg.
 
 ## License
 

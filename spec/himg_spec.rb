@@ -5,7 +5,7 @@ RSpec.describe Himg do
     expect(Himg::VERSION).not_to be nil
   end
 
-  it "does something useful" do
+  it "converts HTML to an Image" do
     expect(false).to eq(true)
   end
 end
