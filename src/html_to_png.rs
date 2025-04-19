@@ -61,12 +61,9 @@ pub async fn html_to_png(
     // Determine height to render
     let computed_height = document.as_ref().root_element().final_layout.size.height;
     let render_height = (computed_height as u32).max(options.image_size.height).min(4000);
-    //let scaled_render_height = (render_height as f64 * himg.hidpi_scale as f64) as u32;
     let render_size = ImageSize {
-        //width: options.image_size.width,
         height: render_height,
         ..options.image_size
-        //hidpi_scale: options.image_size.hidpi_scale,
     };
     logger.log("Calculated render dimensions from document");
 

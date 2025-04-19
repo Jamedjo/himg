@@ -17,9 +17,6 @@ use std::{
     path::{Path, PathBuf},
 };
 
-//struct Himg {
-//}
-
 #[tokio::main]
 async fn main() {
     let mut logger = TimedLogger::init();
@@ -28,18 +25,13 @@ async fn main() {
         .skip(1)
         .next()
         .unwrap_or_else(|| "/home/james/Software/blitz/examples/assets/github_profile_reduced.html".into());
-
-    println!("{}", path_string);
-
-    // Assert that path is valid
-    // TODO
+    println!("Loading {}", path_string);
 
     // Fetch HTML from path
-    let file_content = std::fs::read(path_string.clone()).unwrap();
-    let base_url = format!("file://{}", path_string.clone());
-    let html = String::from_utf8(file_content).unwrap();
+    let html = std::fs::read_to_string(&path_string).unwrap();
     logger.log("Fetched HTML");
 
+    // Configure viewport dimensions
     let options = Options {
         image_size: ImageSize {
             width: 1200,
@@ -50,18 +42,18 @@ async fn main() {
         allow_net_requests: true, //TODO: Implement using this
     };
 
+    // Render to Image
+    let base_url = format!("file://{}", path_string.clone());
     let buffer = html_to_png(&html, base_url, options, &mut logger).await;
 
-    // Determine output path, and open a file at that path. TODO: make configurable.
+    // Determine output path, and open a file at that path.
     let out_path = compute_filename(&path_string);
     let mut file = File::create(&out_path).unwrap();
 
     // Encode buffer as PNG and write it to a file
     write_png(&mut file, &buffer, options.image_size.scaled_width(), options.image_size.scaled_height());
-
     logger.log("Wrote out png");
 
-    // Log result.
     logger.log_total_time("\nDone");
     println!("Written to {}", out_path.display());
 }
