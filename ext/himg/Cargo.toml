@@ -13,7 +13,7 @@ crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 magnus = { version = "0.7.1" }
-rb-sys = { version = "0.9.107", features = ["stable-api-compiled-fallback"] }
+rb-sys = { version = "=0.9.107", features = ["stable-api-compiled-fallback"] }
 blitz-traits = { version = "0.1.0-alpha.1" }
 blitz-dom = { version = "0.1.0-alpha.1" }
 blitz-net = { version = "0.1.0-alpha.1" }
