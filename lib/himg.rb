@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "himg/version"
+require "himg/railtie" if defined?(Rails::Railtie)
 
 # Attempt to load a versioned extension based on the Ruby version.
 # Fall back to loading the non-versioned extension if version-specific loading fails.
