@@ -1,0 +1,8 @@
+module Himg
+  VERSION: String
+
+  class Renderer
+    def initialize: (Integer width, Integer height) -> void
+    def render: (String html) -> String
+  end
+end

@@ -1,2 +1,18 @@
-/target
+/.bundle/
+/.yardoc
+/_yardoc/
+/coverage/
+/doc/
+/pkg/
+/spec/reports/
+/tmp/
+*.bundle
+*.so
+*.o
+*.a
+mkmf.log
+target/
 /output
+
+# rspec failure tracking
+.rspec_status
