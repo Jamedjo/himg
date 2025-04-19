@@ -13,7 +13,6 @@ Gem::Specification.new do |spec|
   spec.homepage = "https://github.com/Jamedjo/Himg"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 3.1.0"
-  spec.required_rubygems_version = ">= 3.3.11"
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = "https://github.com/Jamedjo/Himg"
@@ -35,7 +34,7 @@ Gem::Specification.new do |spec|
 
   # Uncomment to register a new dependency of your gem
   # spec.add_dependency "example-gem", "~> 1.0"
-  spec.add_dependency "rb_sys", "~> 0.9.91"
+  spec.add_dependency "rb_sys", "~> 0.9"
 
   # For more information and examples about making a new gem, check out our
   # guide at: https://bundler.io/guides/creating_gem.html

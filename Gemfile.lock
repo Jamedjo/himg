@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     himg (0.0.1)
-      rb_sys (~> 0.9.91)
+      rb_sys (~> 0.9)
 
 GEM
   remote: https://rubygems.org/

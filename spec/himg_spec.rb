@@ -8,4 +8,11 @@ RSpec.describe Himg do
   it "converts HTML to an Image" do
     expect(false).to eq(true)
   end
+
+  it "can call into Rust" do
+    result = Himg.hello("earth")
+
+    expect(result).to eq("Hello earth, from Rust!")
+
+  end
 end
