@@ -19,6 +19,6 @@ module Dummy
       config.action_view.cache_template_loading = false
     end
 
-    config.root = File.expand_path('..', __dir__)
+    config.root = File.expand_path("..", __dir__)
   end
 end

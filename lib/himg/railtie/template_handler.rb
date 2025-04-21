@@ -1,7 +1,7 @@
 module Himg
   class Railtie
     class TemplateHandler
-      def self.call(template, source)
+      def self.call(_template, source)
         <<-CODE
           Himg.render(#{source.inspect}).pack("C*")
         CODE

@@ -29,7 +29,7 @@ RSpec.describe "Himg::Railtie::ErbTemplateHandler", type: :railtie do
     let(:source) { "<html><body><%= 'eiknarF'.reverse %></body></html>" }
     let(:view_path) { "/virtual/app/views/users/show.html.erb" }
     let(:template) do
-      ActionView::Template.new(source, view_path, described_class, locals: [], format: 'himg.erb')
+      ActionView::Template.new(source, view_path, described_class, locals: [], format: "himg.erb")
     end
     let(:view_context) do
       ActionView::Base.new(ActionView::LookupContext.new([]), {}, nil)
@@ -51,7 +51,7 @@ RSpec.describe "Himg::Railtie::ErbTemplateHandler", type: :railtie do
     it "pre-processes with ERB" do
       result = described_class.call(template, source)
 
-      expect(Himg).to receive(:render).with(/<body>Frankie<\/body>/).and_return([])
+      expect(Himg).to receive(:render).with(%r{<body>Frankie</body>}).and_return([])
 
       view_context.instance_eval(result)
     end

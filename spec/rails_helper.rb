@@ -1,18 +1,18 @@
 # frozen_string_literal: true
 
-if ENV['BUNDLER_ORIG_BUNDLE_GEMFILE'].include?('gemfiles/plain_ruby.gemfile')
+if ENV["BUNDLER_ORIG_BUNDLE_GEMFILE"].include?("gemfiles/plain_ruby.gemfile")
   RSpec.configure do |c|
     c.filter_run_excluding type: lambda { |type|
-      %i(controller request railtie).include?(type)
+      %i[controller request railtie].include?(type)
     }
   end
-    UsersController = Class.new
+  UsersController = Class.new
   return
 else
   require "rails"
 end
 
-ENV['RAILS_ENV'] ||= 'test'
+ENV["RAILS_ENV"] ||= "test"
 
 require "bundler/setup"
 
@@ -22,4 +22,4 @@ require "himg/railtie"
 
 Rails.application.initialize!
 
-require 'rspec/rails'
+require "rspec/rails"
