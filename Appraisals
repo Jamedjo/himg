@@ -1,18 +1,33 @@
 appraise "plain-ruby" do
 end
 
-appraise "rails-5" do
-  gem "rails", "~> 5.0"
-end
-
 appraise "rails-6" do
   gem "rails", "~> 6.0"
+  gem "rspec-rails", "~> 6.0"
+  gem "concurrent-ruby", "1.3.4" # Logger dependency fix, see: https://stackoverflow.com/questions/79360526/uninitialized-constant-activesupportloggerthreadsafelevellogger-nameerror
+  gem "bigdecimal", "~> 1.4" # See: https://github.com/rails/rails/issues/34822
+  gem "drb"
 end
 
-appraise "rails-7" do
-  gem "rails", "~> 7.0"
+appraise "rails-7-0" do
+  gem "rails", "~> 7.0.0"
+  gem "rspec-rails", "~> 7.0"
+  gem "concurrent-ruby", "1.3.4" # Logger dependency fix, see: https://stackoverflow.com/questions/79360526/uninitialized-constant-activesupportloggerthreadsafelevellogger-nameerror
+  gem "bigdecimal", "~> 1.4" # See: https://github.com/rails/rails/issues/34822
+  gem "drb"
+end
+
+appraise "rails-7-1" do
+  gem "rails", "~> 7.1.0"
+  gem "rspec-rails", "~> 7.0"
+end
+
+appraise "rails-7-2" do
+  gem "rails", "~> 7.2.0"
+  gem "rspec-rails", "~> 7.0"
 end
 
 appraise "rails-8" do
   gem "rails", "~> 8.0"
+  gem "rspec-rails", "~> 7.0"
 end
