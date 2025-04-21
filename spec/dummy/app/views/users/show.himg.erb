@@ -14,15 +14,14 @@
     }
 
     .tagline {
-      font-size: 14px;
       color: #888;
     }
   </style>
 </head>
 <body>
     <header></header>
-    <img style="border-radius: 50%; margin-top: -100px;" src="https://gravatar.com/avatar/3787c177b6a6bcc0112dbe0fc10b75c2?s=200">
-    <b style="display:block;"><%= @username %></b>
+    <img style="border-radius: 50%; margin-top: -100px; overflow: hidden;" src="https://gravatar.com/avatar/3787c177b6a6bcc0112dbe0fc10b75c2?s=200">
+    <h1><%= @username %></h1>
     <div class="tagline">This is a test profile for Himg: The Hyper Image Generator!</div>
   </div>
 </body>
