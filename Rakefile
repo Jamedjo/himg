@@ -17,4 +17,4 @@ RbSys::ExtensionTask.new("himg", GEMSPEC) do |ext|
   ext.lib_dir = "lib/himg"
 end
 
-task default: %i[compile spec standard]
+task default: %i[compile standard]

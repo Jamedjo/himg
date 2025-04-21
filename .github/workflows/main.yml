@@ -26,4 +26,6 @@ jobs:
           cargo-cache: true
           rubygems: '3.6.7'
       - name: Run the default task
-        run: bundle exec appraisal rake
+        run: bundle exec rake
+      - name: Run tests against plain ruby + multiple rails versions
+        run: bundle exec appraisal rspec
