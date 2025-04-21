@@ -16,6 +16,7 @@ In Rails this will mean you can process user.himg.erb to display an image includ
 4. Network requests can be made: don't use this library with untrusted inputs.
 5. file:// URLs are resolved: this could expose files on your computer.
 6. Native extensions are not yet being published for different os/arch
+7. Error handling hasn't been added yet
 
 ## Installation
 
@@ -32,6 +33,35 @@ gem install himg
 ```
 
 ## Usage
+
+### Rails
+
+Simply add a `show.himg.erb`!
+
+```erb
+<div><%= @username %></div>
+```
+
+A :himg template handler is registered and will be called by rails' `default_render` method automatically when the corresponding view is found. This can be `show.himg` for a static image, or `show.himg.erb` to use variables from the controller.
+
+If you prefer you could also use `render himg: "<div>My Data</div>"` instead, but should be careful with untrusted input if constructing HTML manually.
+
+To be explicit in the controler you can also use `respond_to` style:
+
+```ruby
+respond_to do |format|
+  format.html
+  format.himg
+end
+```
+
+```ruby
+respond_to do |format|
+  format.html
+  format.himg { render himg: '<h1 style="text-align: center;">Recent Users</h1>' }
+  format.png { render himg: '<div>For .png URLs</div>' }
+end
+```
 
 ### Run from Ruby
 

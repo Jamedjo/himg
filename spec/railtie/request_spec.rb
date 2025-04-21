@@ -23,6 +23,25 @@ RSpec.describe "Himg Railtie Requests", type: :request do
 
     it "renders png format correctly" do
       get "/users/jamedjo.png"
+
+      expect(response).to have_http_status(:success)
+      expect(response.content_type).to include("image/png")
+      expect(response.body).to eq("MOCK_PNG_DATA")
+    end
+  end
+
+  describe "GET /users" do
+    it "renders format.himg with a renderer" do
+      get "/users.himg"
+
+      expect(response).to have_http_status(:success)
+      expect(response.content_type).to include("image/png")
+      expect(response.body).to eq("MOCK_PNG_DATA")
+    end
+
+    it "renders format.himg when given a .png URL" do
+      get "/users.png"
+
       expect(response).to have_http_status(:success)
       expect(response.content_type).to include("image/png")
       expect(response.body).to eq("MOCK_PNG_DATA")
