@@ -12,3 +12,6 @@ Style/FrozenStringLiteralComment:
 
 Metrics/BlockLength:
   Enabled: false
+
+Bundler/OrderedGems:
+  Enabled: false
