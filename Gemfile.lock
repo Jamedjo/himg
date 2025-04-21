@@ -182,10 +182,10 @@ DEPENDENCIES
   appraisal
   himg!
   irb
-  rake (~> 13.0)
+  rake
   rake-compiler
-  rspec (~> 3.0)
-  standard (~> 1.3)
+  rspec
+  standard
   steep
 
 BUNDLED WITH
