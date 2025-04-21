@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    himg (0.0.1)
+    himg (0.0.2)
       rb_sys (~> 0.9)
 
 GEM
@@ -99,15 +99,7 @@ GEM
     drb (2.2.1)
     erubi (1.13.1)
     ffi (1.17.2)
-    ffi (1.17.2-aarch64-linux-gnu)
-    ffi (1.17.2-aarch64-linux-musl)
-    ffi (1.17.2-arm-linux-gnu)
-    ffi (1.17.2-arm-linux-musl)
-    ffi (1.17.2-arm64-darwin)
-    ffi (1.17.2-x86-linux-gnu)
-    ffi (1.17.2-x86-linux-musl)
     ffi (1.17.2-x86_64-linux-gnu)
-    ffi (1.17.2-x86_64-linux-musl)
     fileutils (1.7.3)
     globalid (1.2.1)
       activesupport (>= 6.1)
@@ -299,16 +291,8 @@ GEM
     zeitwerk (2.7.2)
 
 PLATFORMS
-  aarch64-linux-gnu
-  aarch64-linux-musl
-  arm-linux-gnu
-  arm-linux-musl
-  arm64-darwin
-  x86-linux-gnu
-  x86-linux-musl
   x86_64-linux
   x86_64-linux-gnu
-  x86_64-linux-musl
 
 DEPENDENCIES
   appraisal
