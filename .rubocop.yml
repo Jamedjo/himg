@@ -15,3 +15,6 @@ Metrics/BlockLength:
 
 Bundler/OrderedGems:
   Enabled: false
+
+Layout/ExtraSpacing:
+  Enabled: false
