@@ -17,7 +17,7 @@ RSpec.describe "Himg::Railtie::TemplateHandler", type: :railtie do
     it "evaluates to png data" do
       result = described_class.call(template, source)
 
-      expect(eval(result)).to start_with("\x89PNG".b)
+      expect(eval(result)).to start_with("\x89PNG".b) # rubocop:disable Security/Eval
     end
   end
 end
