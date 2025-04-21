@@ -5,7 +5,9 @@ require "rspec/core/rake_task"
 
 RSpec::Core::RakeTask.new(:spec)
 
-require "standard/rake"
+require "rubocop/rake_task"
+
+RuboCop::RakeTask.new
 
 require "rb_sys/extensiontask"
 
@@ -17,4 +19,4 @@ RbSys::ExtensionTask.new("himg", GEMSPEC) do |ext|
   ext.lib_dir = "lib/himg"
 end
 
-task default: %i[compile standard]
+task default: %i[compile rubocop]

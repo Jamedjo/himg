@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.email = ["git@jamedjo.co.uk"]
 
   spec.summary = "The Hyper Image Generator"
-  spec.description = "Generates images from a minimal subset of HTML and CSS"
+  spec.description = "You give it HTML and it renders an Image!"
   spec.homepage = "https://github.com/Jamedjo/Himg"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 3.1.0"
@@ -41,7 +41,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake"
   spec.add_development_dependency "rake-compiler"
   spec.add_development_dependency "rspec"
-  spec.add_development_dependency "standard"
+  spec.add_development_dependency "rubocop"
   spec.add_development_dependency "steep"
   spec.add_development_dependency "puma"
   spec.add_development_dependency "debug"
