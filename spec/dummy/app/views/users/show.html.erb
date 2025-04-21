@@ -1,1 +1,29 @@
-<div><%= @username %></div>
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      text-align: center;
+    }
+
+    header {
+      height: 100px;
+      background-color: #e5e5f7;
+    }
+
+    .tagline {
+      font-size: 14px;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+    <header></header>
+    <img style="border-radius: 50%; margin-top: -40px;" src="https://gravatar.com/avatar/3787c177b6a6bcc0112dbe0fc10b75c2?s=80">
+    <b style="display:block;"><%= @username %></b>
+    <div class="tagline">Software Engineer</div>
+  </div>
+</body>
+</html>

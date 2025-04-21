@@ -2,12 +2,28 @@
 <html>
 <head>
   <style>
-    body { font-family: Arial; background-color: #f5f5f5; padding: 20px; }
-    h1 { color: #333; }
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      text-align: center;
+    }
+
+    header {
+      height: 300px;
+      background-color: #e5e5f7;
+    }
+
+    .tagline {
+      font-size: 14px;
+      color: #888;
+    }
   </style>
 </head>
 <body>
-  <h1><%= @username %></h1>
-  <p>This is a test profile for Himg: The Hyper Image Generator</p>
+    <header></header>
+    <img style="border-radius: 50%; margin-top: -100px;" src="https://gravatar.com/avatar/3787c177b6a6bcc0112dbe0fc10b75c2?s=200">
+    <b style="display:block;"><%= @username %></b>
+    <div class="tagline">This is a test profile for Himg: The Hyper Image Generator!</div>
+  </div>
 </body>
 </html>

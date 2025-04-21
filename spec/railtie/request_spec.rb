@@ -8,9 +8,10 @@ RSpec.describe "Himg Railtie Requests", type: :request do
   describe "GET /users/jamedjo" do
     it "renders HTML correctly" do
       get "/users/jamedjo"
+
       expect(response).to have_http_status(:success)
       expect(response.content_type).to include("text/html")
-      expect(response.body).to eq("<div>Jamedjo</div>\n")
+      expect(response.body).to include(/>Jamedjo</)
     end
 
     it "renders himg format correctly" do

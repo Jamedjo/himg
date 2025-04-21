@@ -7,7 +7,7 @@ RSpec.describe UsersController, type: :controller do
     get :show, params: { id: "jamedjo" }
 
     expect(response).to have_http_status(:success)
-    expect(response.body).to eq("<div>Jamedjo</div>\n")
+    expect(response.body).to include(/>Jamedjo</)
   end
 
   it "renders with himg format" do
