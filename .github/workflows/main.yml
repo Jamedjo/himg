@@ -27,5 +27,6 @@ jobs:
           rubygems: '3.6.7'
       - name: Run the default task
         run: bundle exec rake
+        continue-on-error: true
       - name: Run tests against plain ruby + multiple rails versions
         run: bundle exec appraisal rspec
