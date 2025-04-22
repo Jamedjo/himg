@@ -21,7 +21,7 @@ async fn main() {
 
     // Fetch HTML from path
     let html = std::fs::read_to_string(&path_string).unwrap();
-    logger.log("Fetched HTML");
+    logger.log("Read HTML");
 
     // Configure viewport dimensions
     let options = Options {
