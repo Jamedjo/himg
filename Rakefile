@@ -20,7 +20,7 @@ RbSys::ExtensionTask.new("himg", GEMSPEC) do |ext|
 end
 
 require "bump/tasks"
-Bump.replace_in_default = %w[ext/himg/Cargo.toml]
+Bump.replace_in_default = %w[Cargo.lock ext/himg/Cargo.toml]
 Bump.changelog = :editor
 
 task default: %i[compile rubocop]
