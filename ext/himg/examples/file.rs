@@ -37,14 +37,14 @@ async fn main() {
 
     // Render to Image
     let base_url = format!("file://{}", path_string.clone());
-    let buffer = html_to_image(&html, Some(base_url), options, &mut logger).await;
+    let render_output = html_to_image(&html, Some(base_url), options, &mut logger).await;
 
     // Determine output path, and open a file at that path.
     let out_path = compute_filename(&path_string);
     let mut file = File::create(&out_path).unwrap();
 
     // Encode buffer as PNG and write it to a file
-    write_png(&mut file, &buffer, options.image_size.scaled_width(), options.image_size.scaled_height()).unwrap();
+    write_png(&mut file, &render_output.buffer, render_output.image_size.scaled_width(), render_output.image_size.scaled_height()).unwrap();
     logger.log("Wrote out png");
 
     logger.log_total_time("\nDone");
