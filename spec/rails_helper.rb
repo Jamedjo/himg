@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-if ENV["BUNDLER_ORIG_BUNDLE_GEMFILE"].include?("gemfiles/plain_ruby.gemfile")
+if %r{gemfiles/rails.*\.gemfile}.match?(ENV["BUNDLER_ORIG_BUNDLE_GEMFILE"])
+  require "rails"
+else
   RSpec.configure do |c|
     c.filter_run_excluding type: lambda { |type|
       %i[controller request railtie].include?(type)
@@ -8,8 +10,6 @@ if ENV["BUNDLER_ORIG_BUNDLE_GEMFILE"].include?("gemfiles/plain_ruby.gemfile")
   end
   UsersController = Class.new
   return
-else
-  require "rails"
 end
 
 ENV["RAILS_ENV"] ||= "test"
