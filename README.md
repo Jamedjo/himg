@@ -2,11 +2,9 @@
 
 You give it HTML and it gives back an image!
 
-Parses a minimal subset of HTML/CSS, fetches nested resources, renders an image on the GPU.
+Parses a minimal subset of HTML/CSS, fetches nested resources, renders an image on the GPU. No browser, no fuss.
 
-Uses rust libraries to do this in a fast, hopefully safe way.
-
-In Rails this will mean you can process user.himg.erb to display an image including data from a user's profile.
+![Mockup showing HTML being transformed into a WhatsApp preview](/readme_hero.svg)
 
 ## CAVEATS
 
