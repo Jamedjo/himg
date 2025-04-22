@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [0.0.4] - 2025-04-22
+
 - Allow `width`, `height` and `truncate` to be passed to the render function.
 
 ## [0.0.3] - 2025-04-22
