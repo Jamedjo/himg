@@ -25,8 +25,8 @@ pub async fn render(html: String) -> Vec<u8> {
     // Configure viewport dimensions
     let options = Options {
         image_size: ImageSize {
-            width: 1200, //TODO: pass this in
-            height: 800, //TODO: decide if this will be fixed or dynamic from the document
+            width: 720, //TODO: pass this in
+            height: 405, //TODO: decide if this will be fixed or dynamic from the document
             hidpi_scale: 1.0,
         },
         color_scheme: ColorScheme::Light,
