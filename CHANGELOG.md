@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [0.0.3] - 2025-04-22
+
 - Ensure that when render height is expanded to fit the content that we update
   the height we try to write in the png metadata to match.
 - Rust creates a ruby string with the binary png data so we don't need to convert with .pack("C*")
