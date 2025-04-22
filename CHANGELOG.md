@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [0.0.5] - 2025-04-22
+
 - Can configure `render himg: ""` with options including `width:`, `height:`,
   `truncate:` and `verbose:`.
 - Can use `himg_config` helper methods at controller level and action level
