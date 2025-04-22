@@ -11,12 +11,17 @@ use crate::image_size::ImageSize;
 use crate::logger::Logger;
 use crate::options::Options;
 
+pub struct RenderOutput {
+    pub buffer: Vec<u8>,
+    pub image_size: ImageSize,
+}
+
 pub async fn html_to_image(
     html: &str,
     base_url: Option<String>,
     options: Options,
     logger: &mut dyn Logger,
-) -> Vec<u8> {
+) -> RenderOutput {
     let (mut recv, callback) = MpscCallback::new();
     logger.log("Initial config");
 
@@ -83,5 +88,8 @@ pub async fn html_to_image(
 
     logger.log("Rendered to buffer");
 
-    buffer
+    RenderOutput {
+        buffer: buffer,
+        image_size: render_size,
+    }
 }

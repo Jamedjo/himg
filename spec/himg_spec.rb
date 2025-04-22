@@ -6,15 +6,13 @@ RSpec.describe Himg do
   end
 
   it "converts HTML to an Image" do
-    png_data = Himg.render("<html></html>")
-    png_string = png_data.pack("C*")
+    png_string = Himg.render("<html></html>")
 
     expect(png_string).to start_with("\x89PNG\r\n\x1A\n".b)
   end
 
   it "finishes writing the png" do
-    png_data = Himg.render("<html></html>")
-    png_string = png_data.pack("C*")
+    png_string = Himg.render("<html></html>")
 
     expect(png_string).to end_with("IEND\xAEB`\x82".b)
   end

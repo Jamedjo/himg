@@ -37,23 +37,24 @@ pub async fn render(html: String) -> Result<Vec<u8>, std::io::Error> {
     // Render to Image
     //let base_url = format!("file://{}", path_string.clone());
     let base_url = None;
-    let image_data = html_to_image(&html, base_url, options, &mut logger).await;
+    let render_output = html_to_image(&html, base_url, options, &mut logger).await;
 
     // Determine output path, and open a file at that path.
     let mut output_buffer: Vec<u8> = Vec::new();
 
     // Encode buffer as PNG and write it to a file
-    write_png(&mut output_buffer, &image_data, options.image_size.scaled_width(), options.image_size.scaled_height())?;
+    write_png(&mut output_buffer, &render_output.buffer, render_output.image_size.scaled_width(), render_output.image_size.scaled_height())?;
 
     Ok(output_buffer)
 }
 
-pub fn render_blocking_rb(html: String) -> Result<Vec<u8>, magnus::Error> {
+pub fn render_blocking_rb(ruby: &Ruby, html: String) -> Result<magnus::RString, magnus::Error> {
     let exception_class = ExceptionClass::from_value(magnus::eval("Himg::Error").unwrap()).unwrap();
 
-    render_blocking(html).map_err(|e| {
-        Error::new(exception_class, format!("{}", e))
-    })
+    match render_blocking(html) {
+        Ok(data) => Ok(ruby.str_from_slice(&data)),
+        Err(e) => Err(Error::new(exception_class, format!("{}", e))),
+    }
 }
 
 #[magnus::init]

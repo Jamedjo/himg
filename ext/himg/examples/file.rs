@@ -43,7 +43,7 @@ async fn main() {
     let mut file = File::create(&out_path).unwrap();
 
     // Encode buffer as PNG and write it to a file
-    write_png(&mut file, &buffer, options.image_size.scaled_width(), options.image_size.scaled_height());
+    write_png(&mut file, &buffer, options.image_size.scaled_width(), options.image_size.scaled_height()).unwrap();
     logger.log("Wrote out png");
 
     logger.log_total_time("\nDone");

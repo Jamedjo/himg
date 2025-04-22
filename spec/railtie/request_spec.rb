@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "Himg Railtie Requests", type: :request do
   before do
-    allow(Himg).to receive(:render).and_return("MOCK_PNG_DATA".unpack("C*"))
+    allow(Himg).to receive(:render).and_return("MOCK_PNG_DATA")
   end
 
   describe "GET /users/jamedjo" do

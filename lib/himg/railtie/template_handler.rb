@@ -4,7 +4,7 @@ module Himg
     class TemplateHandler
       def self.call(_template, source)
         <<-CODE
-          Himg.render(#{source.inspect}).pack("C*")
+          Himg.render(#{source.inspect})
         CODE
       end
     end
@@ -21,7 +21,7 @@ module Himg
           output = begin
             #{preprocessed_view_code}
           end
-          Himg.render(output).pack("C*")
+          Himg.render(output)
         CODE
       end
     end

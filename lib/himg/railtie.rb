@@ -31,7 +31,7 @@ module Himg
     initializer "himg.controller_renderer" do
       ActionController::Renderers.add :himg do |obj, _options|
         png_data = Himg.render(obj)
-        send_data png_data.pack("C*"), type: "image/png", disposition: "inline"
+        send_data png_data, type: "image/png", disposition: "inline"
       end
     end
   end
