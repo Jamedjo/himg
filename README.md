@@ -36,11 +36,13 @@ gem install himg
 ### Ruby
 
 ```ruby
-png = Himg.render("<html bgcolor='blue'></html>") 
+png = Himg.render("<!DOCTYPE html><body style='background:blue;'></body>")
+File.open("blue.png", "wb"){|f| f.write(png) }
 ```
 
 ```ruby
-png = Himg.render("<h1>Hi</h1>", width: 24, height: 24, truncate: false) 
+png = Himg.render("<!DOCTYPE html><h1>Snapshot</h1>", width: 89, height: 5, truncate: false)
+File.open("dynamic_height.png", "wb"){|f| f.write(png) }
 ```
 
 ### Rails
