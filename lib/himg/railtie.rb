@@ -29,9 +29,20 @@ module Himg
     end
 
     initializer "himg.controller_renderer" do
-      ActionController::Renderers.add :himg do |obj, _options|
-        png_data = Himg.render(obj)
+      ActionController::Renderers.add :himg do |obj, options = {}|
+        configured_options = options[:config] || {}
+        direct_options = options.symbolize_keys.slice(*Himg::RENDER_OPTIONS)
+        merged_options = configured_options.merge(direct_options)
+
+        png_data = Himg.render(obj, **merged_options)
         send_data png_data, type: "image/png", disposition: "inline"
+      end
+    end
+
+    initializer 'himg.controller_config' do
+      require "himg/railtie/controller_config"
+      ActiveSupport.on_load(:action_controller) do
+        include Himg::Railtie::ControllerConfig
       end
     end
   end

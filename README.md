@@ -63,13 +63,46 @@ Once you've added a view template for your resource, you can use it to generate 
 <meta property="og:image" content="<%= user_url(@user.username, format: :png) %>" />
 ```
 
-### Advanced Rails Usage
+### Configuration Options
 
-A :himg template handler is registered and will be called by rails' `default_render` method automatically when the corresponding view is found. This can be `show.himg` for a static image, or `show.himg.erb` to use variables from the controller.
+Options: `width`, `height`, `verbose`, `truncate`.
+
+### Passing options to a Rails view template
+
+Options can be set at a controller level using the `himg_config` helper method:
+```ruby
+class UsersController < ActionController::Base
+  himg_config(verbose: true)
+end
+```
+
+These can be overridden at a view level:
+```ruby
+class UsersController < ActionController::Base
+  def show
+    himg_config(width: params[:w]) if params[:w]
+
+    @user = User.new
+  end
+```
+
+### Rails manual render
 
 If you prefer you could also use `render himg: "<div>My Data</div>"` instead, but should be careful with untrusted input if constructing HTML manually.
 
-To be explicit in the controler you can also use `respond_to` style:
+Options can then be passed directly to the manual render:
+```ruby
+render himg: '<!DOCTYPE html>', truncate: false
+```
+
+Alternatively you can pass in options which have been set with `himg_config`:
+```ruby
+render himg: '<!DOCTYPE html>', config: himg_config
+```
+
+### Rails `respond_to`
+
+To be explicit in the controller you can also use `respond_to` style:
 
 ```ruby
 respond_to do |format|
@@ -78,6 +111,7 @@ respond_to do |format|
 end
 ```
 
+You can also use this combined with a manual render:
 ```ruby
 respond_to do |format|
   format.html
@@ -85,6 +119,16 @@ respond_to do |format|
   format.png { render himg: '<div>For .png URLs</div>' }
 end
 ```
+
+### How it works
+
+No browser, just basics!
+
+Himg calls through to the amazing blitz library, which uses Stylo to parse the CSS, servo/html5ever to parse the HTML, fetches network resources, builds a scene graph and hands over to vello to render an image.
+
+Interaction between Ruby & Rust is done with the help of `magnus`, `rb_sys` and lots of glue code from the `oxidize-rb` team.
+
+To play nicely with Rails a template handler is registered, which Rails' `default_render` method automatically calls when the corresponding view is found. This can be `show.himg` for a static image, or `show.himg.erb` to use variables from the controller. Additionally a Renderer is available with `render himg: 'content'` in case a view template is not needed.
 
 ### Run directly from the command line to output an image
 

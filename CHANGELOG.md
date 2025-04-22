@@ -1,5 +1,14 @@
 ## [Unreleased]
 
+- Can configure `render himg: ""` with options including `width:`, `height:`,
+  `truncate:` and `verbose:`.
+- Can use `himg_config` helper methods at controller level and action level
+  to set `@_himg_config`, which can then be passed to the renderer with
+  `render himg: "<!DOCTYPE html>", config: himg_config` as an alternative to
+  specifying config options individually to `ActionController::Rendering#render`.
+- `himg_config` helpers can also be used to control the configuration of
+  template based default render, when not calling render manually within the
+  controller. This works because the template handler can access `@_himg_config`.
 - Disable detailed log timings by default. Can re-enable with verbose: true.
   There is still some logging from blitz-net#fetch for http requests and for
   blitz-html::DocumentHtmlParser#finish on unexpected tokens.
