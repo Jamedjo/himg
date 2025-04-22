@@ -30,6 +30,7 @@ async fn main() {
             height: 800,
             hidpi_scale: 1.0,
         },
+        truncate: false,
         color_scheme: ColorScheme::Light,
         allow_net_requests: true, //TODO: Implement using this
     };

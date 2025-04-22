@@ -40,6 +40,10 @@ gem install himg
 png = Himg.render("<html bgcolor='blue'></html>") 
 ```
 
+```ruby
+png = Himg.render("<h1>Hi</h1>", width: 24, height: 24, truncate: false) 
+```
+
 ### Rails
 
 Simply add a `show.himg.erb`!

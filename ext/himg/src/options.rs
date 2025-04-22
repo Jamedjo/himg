@@ -7,4 +7,5 @@ pub struct Options {
     pub image_size: ImageSize,
     pub color_scheme: ColorScheme,
     pub allow_net_requests: bool,
+    pub truncate: bool,
 }

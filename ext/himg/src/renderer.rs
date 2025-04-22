@@ -1,30 +1,17 @@
 use crate::html_to_image::html_to_image;
-use crate::image_size::ImageSize;
 use crate::options::Options;
 use crate::writer::write_png;
 use crate::logger::{TimedLogger};
 
-use blitz_traits::{ColorScheme};
-
-pub fn render_blocking(html: String) -> Result<Vec<u8>, std::io::Error> {
+pub fn render_blocking(html: String, options: Options) -> Result<Vec<u8>, std::io::Error> {
     let runtime = tokio::runtime::Runtime::new()?;
 
-    runtime.block_on(render(html))
+    runtime.block_on(render(html, options))
 }
 
-pub async fn render(html: String) -> Result<Vec<u8>, std::io::Error> {
+// render_to_bytes, render_to_string, render_to_file, render_to_io
+pub async fn render(html: String, options: Options) -> Result<Vec<u8>, std::io::Error> {
     let mut logger = TimedLogger::init();
-
-    // Configure viewport dimensions
-    let options = Options {
-        image_size: ImageSize {
-            width: 720, //TODO: pass this in
-            height: 405, //TODO: decide if this will be fixed or dynamic from the document
-            hidpi_scale: 1.0,
-        },
-        color_scheme: ColorScheme::Light,
-        allow_net_requests: true, //TODO: Implement using this
-    };
 
     // Render to Image
     //let base_url = format!("file://{}", path_string.clone());

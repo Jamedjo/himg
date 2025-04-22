@@ -17,4 +17,8 @@ end
 # Converts HTML to an Image for a minimal subset of HTML and CSS
 module Himg
   class Error < StandardError; end
+
+  def self.render(html, width: 720, height: 405, truncate: true)
+    render_to_string(html, "width" => width, "height" => height, "truncate" => truncate)
+  end
 end

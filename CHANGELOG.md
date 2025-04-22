@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+- Allow `width`, `height` and `truncate` to be passed to the render function.
+
 ## [0.0.3] - 2025-04-22
 
 - Ensure that when render height is expanded to fit the content that we update

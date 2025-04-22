@@ -64,11 +64,15 @@ pub async fn html_to_image(
     logger.log("Resolved styles and layout");
 
     // Determine height to render
-    let computed_height = document.as_ref().root_element().final_layout.size.height;
-    let render_height = (computed_height as u32).max(options.image_size.height).min(4000);
-    let render_size = ImageSize {
-        height: render_height,
-        ..options.image_size
+    let render_size = if options.truncate {
+        options.image_size
+    } else {
+        let computed_height = document.as_ref().root_element().final_layout.size.height;
+        let render_height = (computed_height as u32).max(options.image_size.height).min(10_000);
+        ImageSize {
+            height: render_height,
+            ..options.image_size
+        }
     };
     logger.log("Calculated render dimensions from document");
 
