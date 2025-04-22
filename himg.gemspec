@@ -37,6 +37,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "rb_sys", "~> 0.9"
 
   spec.add_development_dependency "appraisal"
+  spec.add_development_dependency "bump"
   spec.add_development_dependency "debug"
   spec.add_development_dependency "irb"
   spec.add_development_dependency "rake"

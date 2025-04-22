@@ -19,4 +19,8 @@ RbSys::ExtensionTask.new("himg", GEMSPEC) do |ext|
   ext.lib_dir = "lib/himg"
 end
 
+require "bump/tasks"
+Bump.replace_in_default = %w[ext/himg/Cargo.toml]
+Bump.changelog = :editor
+
 task default: %i[compile rubocop]
