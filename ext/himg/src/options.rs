@@ -8,4 +8,5 @@ pub struct Options {
     pub color_scheme: ColorScheme,
     pub allow_net_requests: bool,
     pub truncate: bool,
+    pub verbose: bool,
 }

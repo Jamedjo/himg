@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+- Disable detailed log timings by default. Can re-enable with verbose: true.
+  There is still some logging from blitz-net#fetch for http requests and for
+  blitz-html::DocumentHtmlParser#finish on unexpected tokens.
+
 ## [0.0.4] - 2025-04-22
 
 - Allow `width`, `height` and `truncate` to be passed to the render function.

@@ -76,7 +76,9 @@ pub async fn html_to_image(
     };
     logger.log("Calculated render dimensions from document");
 
-    println!("Screenshot is ({}x{})",render_size.scaled_width(), render_size.scaled_height());
+    if options.verbose {
+        println!("Screenshot is ({}x{})",render_size.scaled_width(), render_size.scaled_height());
+    }
 
     // Render document to RGBA buffer
     let buffer = render_to_buffer(

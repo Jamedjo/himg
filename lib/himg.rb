@@ -18,7 +18,7 @@ end
 module Himg
   class Error < StandardError; end
 
-  def self.render(html, width: 720, height: 405, truncate: true)
-    render_to_string(html, "width" => width, "height" => height, "truncate" => truncate)
+  def self.render(html, width: 720, height: 405, truncate: true, verbose: false)
+    render_to_string(html, "width" => width, "height" => height, "truncate" => truncate, "verbose" => verbose)
   end
 end

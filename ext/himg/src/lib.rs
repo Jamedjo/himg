@@ -30,6 +30,7 @@ impl Options {
                 hidpi_scale: 1.0,
             },
             truncate: Self::get_option(hash, "truncate", true)?,
+            verbose: Self::get_option(hash, "verbose", false)?,
             color_scheme: ColorScheme::Light,
             allow_net_requests: true, //TODO: Implement using this
         };

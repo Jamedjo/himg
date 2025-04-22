@@ -16,7 +16,6 @@ In Rails this will mean you can process user.himg.erb to display an image includ
 4. Network requests can be made: don't use this library with untrusted inputs.
 5. file:// URLs are resolved: this could expose files on your computer.
 6. Native extensions are not yet being published for different os/arch
-7. Verbose logging is hardcoded
 
 ## Installation
 

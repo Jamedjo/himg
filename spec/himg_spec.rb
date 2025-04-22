@@ -52,4 +52,15 @@ RSpec.describe Himg do
 
     expect(height(png_string)).to be > 5
   end
+
+  it "does not log to stdout by default" do
+    expect { Himg.render("<!DOCTYPE html>") }.not_to output.to_stdout_from_any_process
+  end
+
+  it "allows verbose logging to be turned on" do
+    expect { Himg.render("<!DOCTYPE html>", verbose: true) }.to output(
+      a_string_matching(/Screenshot is \(720x405\)/) &
+      a_string_matching(/Rendered to buffer in \d+ms/)
+    ).to_stdout_from_any_process
+  end
 end

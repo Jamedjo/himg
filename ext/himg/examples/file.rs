@@ -31,6 +31,7 @@ async fn main() {
             hidpi_scale: 1.0,
         },
         truncate: false,
+        verbose: true,
         color_scheme: ColorScheme::Light,
         allow_net_requests: true, //TODO: Implement using this
     };
