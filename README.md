@@ -16,8 +16,7 @@ In Rails this will mean you can process user.himg.erb to display an image includ
 4. Network requests can be made: don't use this library with untrusted inputs.
 5. file:// URLs are resolved: this could expose files on your computer.
 6. Native extensions are not yet being published for different os/arch
-7. Error handling hasn't been added yet
-8. Verbose logging is hardcoded
+7. Verbose logging is hardcoded
 
 ## Installation
 
@@ -82,17 +81,31 @@ respond_to do |format|
 end
 ```
 
-## Development
-
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
-
 ### Run directly from the command line to output an image
+
 ```bash
 bundle exec cargo run --example file
 bundle exec cargo run --example file -- path/to/file.html
 ```
+
+## Development
+
+1. Run `bin/setup` to install dependencies.
+2. Run `rake spec` to run the tests with the default development setup
+3. Run `appraisal rake spec` to run tests against different versions of rails and to confirm that the gem works in a plain ruby environment
+4. Run `bin/console` for an interactive prompt that will allow you to experiment.
+5. Run `RAILS_ENV=development bundle exec spec/dummy/dummy_rails server` to check the dummy app.
+  - http://localhost:3000/users/jamedjo.png will display an opengraph compatible png
+  - http://localhost:3000/users/jamedjo.himg will also render the same png
+  - http://localhost:3000/users/jamedjo will render an HTML page with opengraph meta tags
+6. To install this gem onto your local machine, run `bundle exec rake install`.
+
+## Releases
+
+To release a new version:
+1. Update the version number in `version.rb`
+2. Update the version number in `ext/himg/Cargo.toml`
+3. Run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
 ## Contributing
 
