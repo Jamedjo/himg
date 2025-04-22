@@ -1,8 +1,16 @@
 module Himg
   VERSION: String
 
-  class Renderer
-    def initialize: (Integer width, Integer height) -> void
-    def render: (String html) -> String
+  class Error < StandardError
   end
+
+  def self.render: (
+    String html,
+    ?width: Integer,
+    ?height: Integer,
+    ?truncate: bool,
+    ?verbose: bool
+  ) -> String
+
+  def self.render_to_string: (String html, Hash[string, untyped] options) -> String
 end
