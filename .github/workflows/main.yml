@@ -28,5 +28,7 @@ jobs:
       - name: Run the default task
         run: bundle exec rake
         continue-on-error: true
-      - name: Run tests against plain ruby + multiple rails versions
+      - name: Install multiple Rails versions + plain ruby
+        run: bundle exec appraisal install
+      - name: Run tests against each Rails version
         run: bundle exec appraisal rspec
