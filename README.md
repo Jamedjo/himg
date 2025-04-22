@@ -6,30 +6,7 @@ Parses a minimal subset of HTML/CSS, fetches nested resources, renders an image 
 
 ![Mockup showing HTML being transformed into a WhatsApp preview](/readme_hero.svg)
 
-## CAVEATS
-
-1. This is **pre-alpha** software, don't expect it to work yet.
-2. Rendering requires a GPU. Awaiting CPU support in vello, which Canva may be working on.
-3. Performance needs tuning. Both in the underlying blitz library and how data is passed between Rust and Ruby
-4. Network requests can be made: don't use this library with untrusted inputs.
-5. file:// URLs are resolved: this could expose files on your computer.
-6. Native extensions are not yet being published for different os/arch
-
-## Installation
-
-Install the gem and add to the application's Gemfile by executing:
-
-```bash
-bundle add himg
-```
-
-If bundler is not being used to manage dependencies, install the gem by executing:
-
-```bash
-gem install himg
-```
-
-## Usage
+## Quickstart
 
 ### Ruby
 
@@ -51,9 +28,9 @@ Simply add a `show.himg.erb`!
 <div><%= @username %></div>
 ```
 
-### Adding OpenGraph Meta Tags
+### OpenGraph Meta Tags
 
-Once you've added a view template for your resource, you can use it to generate image cards that will be shown when the page is shared on messenger apps or social media.
+OpenGraph tags let messenger apps and social media sites know to use your generated image as a thumbnail card for your website.
 
 ```html
 <meta property="og:title" content="<%= @user.username %>" />
@@ -61,9 +38,23 @@ Once you've added a view template for your resource, you can use it to generate 
 <meta property="og:image" content="<%= user_url(@user.username, format: :png) %>" />
 ```
 
-### Configuration Options
+# Usage
 
-Options: `width`, `height`, `verbose`, `truncate`.
+Install the gem and add to the application's Gemfile by executing:
+
+```bash
+bundle add himg
+```
+
+## Configuration
+
+|Option | Description | Type | Default |
+|-|-|-|-|
+|width | Sets the width of the rendered content. | integer | 720 |
+|height | Sets the desired height of the rendered output. | integer | 405 |
+|truncate | Keeps the image height fixed instead of expanding to include the full page | bool | true |
+|verbose | Enables detailed logging for debugging and profiling. | bool | false |
+
 
 ### Passing options to a Rails view template
 
@@ -118,7 +109,7 @@ respond_to do |format|
 end
 ```
 
-### How it works
+# How it works
 
 No browser, just basics!
 
@@ -128,14 +119,16 @@ Interaction between Ruby & Rust is done with the help of `magnus`, `rb_sys` and 
 
 To play nicely with Rails a template handler is registered, which Rails' `default_render` method automatically calls when the corresponding view is found. This can be `show.himg` for a static image, or `show.himg.erb` to use variables from the controller. Additionally a Renderer is available with `render himg: 'content'` in case a view template is not needed.
 
-### Run directly from the command line to output an image
+## CAVEATS
 
-```bash
-bundle exec cargo run --example file
-bundle exec cargo run --example file -- path/to/file.html
-```
+1. This is **pre-alpha** software, don't expect it to work yet.
+2. Rendering requires a GPU. Awaiting CPU support in vello, which Canva may be working on.
+3. Performance needs tuning. Both in the underlying blitz library and how data is passed between Rust and Ruby
+4. Network requests can be made: don't use this library with untrusted inputs.
+5. file:// URLs are resolved: this could expose files on your computer.
+6. Native extensions are not yet being published for different os/arch
 
-## Development
+# Development
 
 1. Run `bin/setup` to install dependencies.
 2. Run `rake spec` to run the tests with the default development setup
@@ -147,6 +140,12 @@ bundle exec cargo run --example file -- path/to/file.html
   - http://localhost:3000/users/jamedjo will render an HTML page with opengraph meta tags
 6. To install this gem onto your local machine, run `bundle exec rake install`.
 
+### Run cargo example directly generate image in Rust
+
+```bash
+bundle exec cargo run --example file
+bundle exec cargo run --example file -- path/to/file.html
+```
 ## Releases
 
 To release a new version:
