@@ -4,9 +4,9 @@ use png::{Encoder, ColorType, BitDepth, PixelDimensions, Unit};
 const INCHES_PER_METER: f64 = 39.3701;
 const DEFAULT_DPI: f64 = 144.0;
 
-pub fn write_png<W: Write>(writer: W, buffer: &[u8], width: u32, height: u32) {
+pub fn write_png<W: Write>(writer: W, buffer: &[u8], width: u32, height: u32) -> Result<(), std::io::Error> {
     let encoder = create_encoder(writer, width, height, DEFAULT_DPI);
-    write_data(encoder, buffer);
+    write_data(encoder, buffer)
 }
 
 fn create_encoder<'a, W: Write>(writer: W, width: u32, height: u32, dpi: f64) -> Encoder<'a, W> {
@@ -24,10 +24,11 @@ fn create_encoder<'a, W: Write>(writer: W, width: u32, height: u32, dpi: f64) ->
     encoder
 }
 
-fn write_data<W: Write>(encoder: Encoder<W>, buffer: &[u8]) {
-    //TODO: Better error handling instead of unwrap
-    let mut writer = encoder.write_header().unwrap();
+fn write_data<W: Write>(encoder: Encoder<W>, buffer: &[u8]) -> Result<(), std::io::Error> {
+    let mut writer = encoder.write_header()?;
 
-    writer.write_image_data(buffer).unwrap();
-    writer.finish().unwrap();
+    writer.write_image_data(buffer)?;
+    writer.finish()?;
+
+    Ok(())
 }

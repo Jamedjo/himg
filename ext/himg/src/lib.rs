@@ -11,15 +11,16 @@ pub use writer::write_png;
 pub use logger::{Logger, TimedLogger};
 
 use blitz_traits::{ColorScheme};
-use magnus::{function, prelude::*, Error, Ruby};
+use magnus::{function, prelude::*, ExceptionClass, Error, Ruby};
 
-pub fn render_blocking(html: String) -> Vec<u8> {
-    tokio::runtime::Runtime::new()
-        .unwrap()
-        .block_on(render(html))
+pub fn render_blocking(html: String) -> Result<Vec<u8>, std::io::Error> {
+    let runtime = tokio::runtime::Runtime::new()?;
+
+    runtime.block_on(render(html))
 }
 
-pub async fn render(html: String) -> Vec<u8> {
+// render_to_bytes, render_to_string, render_to_file, render_to_io
+pub async fn render(html: String) -> Result<Vec<u8>, std::io::Error> {
     let mut logger = TimedLogger::init();
 
     // Configure viewport dimensions
@@ -42,9 +43,17 @@ pub async fn render(html: String) -> Vec<u8> {
     let mut output_buffer: Vec<u8> = Vec::new();
 
     // Encode buffer as PNG and write it to a file
-    write_png(&mut output_buffer, &image_data, options.image_size.scaled_width(), options.image_size.scaled_height());
+    write_png(&mut output_buffer, &image_data, options.image_size.scaled_width(), options.image_size.scaled_height())?;
 
-    output_buffer
+    Ok(output_buffer)
+}
+
+pub fn render_blocking_rb(html: String) -> Result<Vec<u8>, magnus::Error> {
+    let exception_class = ExceptionClass::from_value(magnus::eval("Himg::Error").unwrap()).unwrap();
+
+    render_blocking(html).map_err(|e| {
+        Error::new(exception_class, format!("{}", e))
+    })
 }
 
 #[magnus::init]
@@ -52,7 +61,8 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     let module = ruby.define_module("Himg")?;
 
     //TODO: Allow optional base_url for resolving linked resources (stylesheets, images, fonts, etc)
-    module.define_singleton_method("render", function!(render_blocking, 1))?;
+    module.define_singleton_method("render", function!(render_blocking_rb, 1))?;
+
     Ok(())
 }
 
