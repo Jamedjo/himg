@@ -103,8 +103,7 @@ bundle exec cargo run --example file -- path/to/file.html
 ## Releases
 
 To release a new version:
-1. Update the version number in `version.rb`
-2. Update the version number in `ext/himg/Cargo.toml`
+1. Run `rake bump:patch` to update the version numbers in `version.rb` and `ext/himg/Cargo.toml`.
 3. Run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
 ## Contributing
