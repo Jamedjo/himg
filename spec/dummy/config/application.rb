@@ -13,6 +13,7 @@ module Dummy
     config.active_support.deprecation = :stderr
 
     if Rails.env.development?
+      config.hosts.clear
       config.cache_classes = false
       config.eager_load = false
       config.reload_classes_only_on_change = true
