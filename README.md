@@ -35,6 +35,12 @@ gem install himg
 
 ## Usage
 
+### Ruby
+
+```ruby
+png = Himg.render("<html bgcolor='blue'></html>") 
+```
+
 ### Rails
 
 Simply add a `show.himg.erb`!
@@ -42,6 +48,18 @@ Simply add a `show.himg.erb`!
 ```erb
 <div><%= @username %></div>
 ```
+
+### Adding OpenGraph Meta Tags
+
+Once you've added a view template for your resource, you can use it to generate image cards that will be shown when the page is shared on messenger apps or social media.
+
+```html
+<meta property="og:title" content="<%= @user.username %>" />
+<meta property="og:description" content="<%= @user.tagline %>" />
+<meta property="og:image" content="<%= user_url(@user.username, format: :png) %>" />
+```
+
+### Advanced Rails Usage
 
 A :himg template handler is registered and will be called by rails' `default_render` method automatically when the corresponding view is found. This can be `show.himg` for a static image, or `show.himg.erb` to use variables from the controller.
 
@@ -62,12 +80,6 @@ respond_to do |format|
   format.himg { render himg: '<h1 style="text-align: center;">Recent Users</h1>' }
   format.png { render himg: '<div>For .png URLs</div>' }
 end
-```
-
-### Run from Ruby
-
-```ruby
-png = Himg.render("<html bgcolor='blue'></html>") 
 ```
 
 ## Development

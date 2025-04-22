@@ -1,28 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <style>
-    body {
-      margin: 0;
-      font-family: sans-serif;
-      text-align: center;
-    }
-
-    header {
-      height: 100px;
-      background-color: #e5e5f7;
-    }
-
-    .tagline {
-      color: #888;
-    }
-  </style>
+  <meta property="og:title" content="<%= @user.username %>" />
+  <meta property="og:description" content="<%= @user.tagline %>" />
+  <meta property="og:image" content="<%= user_url(@user.username, format: :png) %>" />
 </head>
 <body>
-    <header></header>
-    <img style="border-radius: 50%; margin-top: -40px;" src="https://gravatar.com/avatar/3787c177b6a6bcc0112dbe0fc10b75c2?s=80">
-    <h1><%= @username %></h1>
-    <div class="tagline">Software Engineer</div>
-  </div>
+  <h1><%= @user.username %></h1>
+  <div class="tagline"><%= @user.tagline %></div>
 </body>
 </html>

@@ -1,6 +1,6 @@
 class UsersController < ActionController::Base
   def show
-    @username = params[:id].titlecase
+    @user = User.new(username: params[:id].titlecase)
   end
 
   def index
