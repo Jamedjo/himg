@@ -20,6 +20,6 @@ module Himg
   class Error < StandardError; end
 
   def self.render(html, width: 720, height: 405, truncate: true, verbose: false)
-    render_to_string(html, "width" => width, "height" => height, "truncate" => truncate, "verbose" => verbose)
+    render_to_string(html, "width" => width.to_i, "height" => height.to_i, "truncate" => truncate, "verbose" => verbose)
   end
 end

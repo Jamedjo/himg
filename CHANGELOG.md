@@ -9,6 +9,7 @@
 - `himg_config` helpers can also be used to control the configuration of
   template based default render, when not calling render manually within the
   controller. This works because the template handler can access `@_himg_config`.
+- Can use string width / height with Himg.render
 - Disable detailed log timings by default. Can re-enable with verbose: true.
   There is still some logging from blitz-net#fetch for http requests and for
   blitz-html::DocumentHtmlParser#finish on unexpected tokens.

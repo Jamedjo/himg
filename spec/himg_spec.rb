@@ -47,6 +47,12 @@ RSpec.describe Himg do
     expect(height(png_string)).to eq(5)
   end
 
+  it "allows string values for height and width" do
+    png_string = Himg.render("<html></html>", width: "999", height: "99")
+
+    expect(dimensions(png_string)).to eq [999, 99]
+  end
+
   it "allows height truncation to be turned off" do
     png_string = Himg.render("<div>Tall</div>", height: 5, truncate: false)
 
