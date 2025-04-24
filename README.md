@@ -158,4 +158,8 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/jamedj
 
 ## License
 
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+Copyright (c) 2025 James Edwards-Jones
+
+This project is dual licenced under both the MIT and Apache 2.0 terms.
+
+See: [MIT License](https://opensource.org/licenses/MIT) and [APACHE 2.0 License](http://www.apache.org/licenses/LICENSE-2.0)
