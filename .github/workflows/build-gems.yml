@@ -18,7 +18,7 @@ jobs:
         id: fetch
         with:
           supported-ruby-platforms: |
-            exclude: ["arm-linux", "x64-mingw32"]
+            exclude: ["arm-linux", "x64-mingw32", "x64-mingw-ucrt", "x86_64-darwin", "arm64-darwin"]
           stable-ruby-versions: |
             exclude: ["head"]
 
@@ -41,14 +41,13 @@ jobs:
 
   cross-gem:
     name: Compile native gem for ${{ matrix.platform }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: ci-data
     strategy:
       matrix:
         platform: ${{ fromJSON(needs.ci-data.outputs.result).supported-ruby-platforms }}
     steps:
       - uses: actions/checkout@v4
-
       - uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true

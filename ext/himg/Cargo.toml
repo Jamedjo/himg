@@ -21,6 +21,7 @@ blitz-renderer-vello = { version = "0.1.0-alpha.1" }
 blitz-html = { version = "0.1.0-alpha.1" }
 tokio = { version = "1.42", features =  ["rt-multi-thread", "macros"] }
 png = "0.17"
+openssl = { version = "0.10", features = ["vendored"] }
 
 #euclid = { workspace = true }
 #image = { workspace = true }
