@@ -5,6 +5,7 @@ on:
   push:
     tags:
       - "v*"
+    branches:
       - "cross-gem/*"
   workflow_dispatch:
 
@@ -18,48 +19,64 @@ jobs:
         id: fetch
         with:
           supported-ruby-platforms: |
-            exclude: ["arm-linux", "x64-mingw32", "x64-mingw-ucrt", "x86_64-darwin", "arm64-darwin"]
+            exclude: ["arm-linux", "x64-mingw32", "x64-mingw-ucrt"]
           stable-ruby-versions: |
             exclude: ["head"]
-
-  source-gem:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
-
-      - name: Build gem
-        run: bundle exec rake build
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: source-gem
-          path: pkg/*.gem
 
   cross-gem:
     name: Compile native gem for ${{ matrix.platform }}
     runs-on: ubuntu-22.04
     needs: ci-data
     strategy:
+      fail-fast: false
       matrix:
-        platform: ${{ fromJSON(needs.ci-data.outputs.result).supported-ruby-platforms }}
+        platform:
+          - x86_64-linux
+          - aarch64-linux
+          - x86_64-linux-musl
+          - aarch64-linux-musl
     steps:
       - uses: actions/checkout@v4
-      - uses: ruby/setup-ruby@v1
+      - uses: oxidize-rb/actions/setup-ruby-and-rust@v1
         with:
           bundler-cache: true
-
+          cargo-cache: false
       - uses: oxidize-rb/actions/cross-gem@v1
         id: cross-gem
         with:
           platform: ${{ matrix.platform }}
           ruby-versions: ${{ join(fromJSON(needs.ci-data.outputs.result).stable-ruby-versions, ',') }}
-
       - uses: actions/upload-artifact@v4
         with:
           name: cross-gem-${{ matrix.platform }}
           path: ${{ steps.cross-gem.outputs.gem-path }}
 
+  # Needed to link openssl
+  macos-gems:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: x86_64-darwin
+            os: macos-13
+          - platform: arm64-darwin
+            os: macos-latest
+    runs-on: ${{ matrix.os }}
+    name: Compile native gem for ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: ./ext/himg -> target
+          cache-on-failure: true
+          key: ${{ matrix.platform }}
+      - run: bundle exec rake compile
+      - run: bundle exec rake native gem
+      - uses: actions/upload-artifact@v4
+        with:
+          name: native-gem-${{ matrix.platform }}
+          path: pkg/*.gem
