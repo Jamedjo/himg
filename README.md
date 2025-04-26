@@ -8,6 +8,13 @@ Parses a minimal subset of HTML/CSS, fetches nested resources, renders an image 
 
 ## Quickstart
 
+### Command Line
+
+```bash
+bin/himg screenshot path/to/your.html screenshot.png
+bin/himg screenshot https://github.com/Jamedjo/himg himg.png --width=1024 --verbose --no-truncate
+```
+
 ### Ruby
 
 ```ruby

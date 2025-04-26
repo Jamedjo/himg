@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+- Added bin/himg CLI screenshot tool
+
 ## [0.0.5] - 2025-04-22
 
 - Can configure `render himg: ""` with options including `width:`, `height:`,
