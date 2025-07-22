@@ -1,10 +1,10 @@
-use blitz_dom::net::Resource;
 use blitz_html::HtmlDocument;
 use blitz_net::{MpscCallback, Provider};
-use blitz_renderer_vello::render_to_buffer;
-use blitz_traits::navigation::DummyNavigationProvider;
-use blitz_traits::net::SharedProvider;
-use blitz_traits::{ColorScheme, Viewport};
+use blitz_dom::DocumentConfig;
+use anyrender_vello_cpu::VelloCpuImageRenderer;
+use anyrender::render_to_buffer;
+use blitz_paint::paint_scene;
+use blitz_traits::shell::{Viewport};
 use std::sync::Arc;
 
 use crate::image_size::ImageSize;
@@ -28,24 +28,23 @@ pub async fn html_to_image(
     let net = Arc::new(Provider::new(callback));
     logger.log("Setup blitz-net Provider");
 
-    let navigation_provider = Arc::new(DummyNavigationProvider);
     logger.log("Setup dummy navigation provider");
 
     // Create HtmlDocument
     let mut document = HtmlDocument::from_html(
         &html,
-        options.base_url,
-        Vec::new(),
-        Arc::clone(&net) as SharedProvider<Resource>,
-        None,
-        navigation_provider,
+        DocumentConfig {
+            base_url: options.base_url,
+            net_provider: Some(Arc::clone(&net) as _),
+            ..Default::default()
+        },
     );
     logger.log("Parsed document");
 
     document.as_mut().set_viewport(Viewport::new(
         options.image_size.scaled_width(),
         options.image_size.scaled_height(),
-        options.image_size.hidpi_scale,
+        options.image_size.hidpi_scale as f32,
         options.color_scheme,
     ));
 
@@ -80,16 +79,17 @@ pub async fn html_to_image(
     }
 
     // Render document to RGBA buffer
-    let buffer = render_to_buffer(
-        document.as_ref(),
-        Viewport::new(
+    let buffer = render_to_buffer::<VelloCpuImageRenderer, _>(
+        |scene| paint_scene(
+            scene,
+            document.as_ref(),
+            render_size.hidpi_scale,
             render_size.scaled_width(),
             render_size.scaled_height(),
-            render_size.hidpi_scale,
-            ColorScheme::Light,
         ),
-    )
-    .await;
+        render_size.scaled_width(),
+        render_size.scaled_height(),
+    );
 
     logger.log("Rendered to buffer");
 

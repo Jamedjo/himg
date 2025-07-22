@@ -11,7 +11,7 @@ pub use options::Options;
 pub use html_to_image::html_to_image;
 pub use writer::write_png;
 
-use blitz_traits::ColorScheme;
+use blitz_traits::shell::ColorScheme;
 use magnus::{function, prelude::*, ExceptionClass, Error, Ruby, RString, RHash};
 
 impl Options {

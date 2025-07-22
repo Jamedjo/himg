@@ -3,7 +3,7 @@
 use himg::{html_to_image, Options, ImageSize, write_png};
 use himg::logger::{Logger, TimedLogger};
 
-use blitz_traits::{ColorScheme};
+use blitz_traits::shell::{ColorScheme};
 use std::{
     fs::File,
     path::{Path, PathBuf},
@@ -14,8 +14,7 @@ async fn main() {
     let mut logger = TimedLogger::init();
 
     let path_string = std::env::args()
-        .skip(1)
-        .next()
+        .nth(1)
         .unwrap_or_else(|| "./ext/himg/examples/assets/github_profile.html".into());
     println!("Loading {}", path_string);
     let base_url = format!("file://{}", path_string.clone());

@@ -2,7 +2,7 @@
 pub struct ImageSize {
     pub width: u32,
     pub height: u32,
-    pub hidpi_scale: f32,
+    pub hidpi_scale: f64,
 }
 
 impl ImageSize {

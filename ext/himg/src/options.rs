@@ -1,6 +1,6 @@
 use crate::image_size::ImageSize;
 
-use blitz_traits::ColorScheme;
+use blitz_traits::shell::ColorScheme;
 
 #[derive(Clone)]
 pub struct Options {
