@@ -15,24 +15,24 @@ use blitz_traits::ColorScheme;
 use magnus::{function, prelude::*, ExceptionClass, Error, Ruby, RString, RHash};
 
 impl Options {
-    fn get_option<V: magnus::TryConvert + magnus::IntoValue>(optional_hash: Option<RHash>, key: &str, default: V) -> Result<V, Error> {
-        match optional_hash {
-            Some(hash) => hash.lookup2::<&str, V, V>(key, default),
-            None => Ok(default),
-        }
-    }
-
     pub fn from_ruby(hash: Option<RHash>) -> Result<Self, Error> {
+        let defaults = Options::default();
+
+        let hash = match hash {
+            None => return Ok(defaults),
+            Some(r) => r,
+        };
+
         let options = Options {
             image_size: ImageSize {
-                width: Self::get_option(hash, "width", 720)?,
-                height: Self::get_option(hash, "height", 405)?,
+                width: hash.lookup2("width", 720)?,
+                height: hash.lookup2("height", 405)?,
                 hidpi_scale: 1.0,
             },
-            truncate: Self::get_option(hash, "truncate", true)?,
-            verbose: Self::get_option(hash, "verbose", false)?,
+            truncate: hash.lookup2("truncate", true)?,
+            verbose: hash.lookup2("verbose", false)?,
+            base_url: hash.lookup("base_url")?,
             color_scheme: ColorScheme::Light,
-            allow_net_requests: true, //TODO: Implement using this
         };
 
         Ok(options)
@@ -53,7 +53,6 @@ pub fn render_blocking_rb(ruby: &Ruby, html: String, options: Option<RHash>) -> 
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let module = ruby.define_module("Himg")?;
 
-    //TODO: Allow optional base_url for resolving linked resources (stylesheets, images, fonts, etc)
     module.define_singleton_method("render_to_string", function!(render_blocking_rb, 2))?;
 
     Ok(())

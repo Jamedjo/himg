@@ -18,6 +18,7 @@ async fn main() {
         .next()
         .unwrap_or_else(|| "./ext/himg/examples/assets/github_profile.html".into());
     println!("Loading {}", path_string);
+    let base_url = format!("file://{}", path_string.clone());
 
     // Fetch HTML from path
     let html = std::fs::read_to_string(&path_string).unwrap();
@@ -33,12 +34,11 @@ async fn main() {
         truncate: false,
         verbose: true,
         color_scheme: ColorScheme::Light,
-        allow_net_requests: true, //TODO: Implement using this
+        base_url: Some(base_url),
     };
 
     // Render to Image
-    let base_url = format!("file://{}", path_string.clone());
-    let render_output = html_to_image(&html, Some(base_url), options, &mut logger).await;
+    let render_output = html_to_image(&html, options, &mut logger).await;
 
     // Determine output path, and open a file at that path.
     let out_path = compute_filename(&path_string);

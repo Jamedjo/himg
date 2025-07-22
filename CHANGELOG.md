@@ -1,6 +1,7 @@
 ## [Unreleased]
 
 - Added bin/himg CLI screenshot tool
+- Added `base_url` option for configuring relative paths
 
 ## [0.0.5] - 2025-04-22
 

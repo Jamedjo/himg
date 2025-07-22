@@ -18,9 +18,7 @@ pub async fn render(html: String, options: Options) -> Result<Vec<u8>, std::io::
     };
 
     // Render to Image
-    //let base_url = format!("file://{}", path_string.clone());
-    let base_url = None;
-    let render_output = html_to_image(&html, base_url, options, &mut *logger).await;
+    let render_output = html_to_image(&html, options, &mut *logger).await;
 
     // Determine output path, and open a file at that path.
     let mut output_buffer: Vec<u8> = Vec::new();

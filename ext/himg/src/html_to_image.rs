@@ -18,7 +18,6 @@ pub struct RenderOutput {
 
 pub async fn html_to_image(
     html: &str,
-    base_url: Option<String>,
     options: Options,
     logger: &mut dyn Logger,
 ) -> RenderOutput {
@@ -35,7 +34,7 @@ pub async fn html_to_image(
     // Create HtmlDocument
     let mut document = HtmlDocument::from_html(
         &html,
-        base_url,
+        options.base_url,
         Vec::new(),
         Arc::clone(&net) as SharedProvider<Resource>,
         None,

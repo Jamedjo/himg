@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "spec_helper"
+
 RSpec.describe Himg do
   def dimensions(png_data)
     png_data[0x10..0x18].unpack('NN')
@@ -67,6 +69,15 @@ RSpec.describe Himg do
     expect { Himg.render("<!DOCTYPE html>", verbose: true) }.to output(
       a_string_matching(/Screenshot is \(720x405\)/) &
       a_string_matching(/Rendered to buffer in \d+ms/)
+    ).to_stdout_from_any_process
+  end
+
+  it "fetches resources relative to a base_url" do
+    fixture_path = Pathname.new(__FILE__).parent.join("fixtures")
+    html_with_embed = "<!DOCTYPE html><img src='./relative.svg'/>"
+
+    expect { Himg.render(html_with_embed, base_url: fixture_path, verbose: true) }.to output(
+      a_string_matching(/Success file.*fixtures\/relative\.svg/)
     ).to_stdout_from_any_process
   end
 end

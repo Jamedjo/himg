@@ -61,6 +61,7 @@ bundle add himg
 |height | Sets the desired height of the rendered output. | integer | 405 |
 |truncate | Keeps the image height fixed instead of expanding to include the full page | bool | true |
 |verbose | Enables detailed logging for debugging and profiling. | bool | false |
+|base_url | Where relative paths are relative to for linked resources (stylesheets, images, fonts, etc) | string | nil |
 
 
 ### Passing options to a Rails view template
