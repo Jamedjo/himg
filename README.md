@@ -62,6 +62,7 @@ bundle add himg
 |truncate | Keeps the image height fixed instead of expanding to include the full page | bool | true |
 |verbose | Enables detailed logging for debugging and profiling. | bool | false |
 |base_url | Where relative paths are relative to for linked resources (stylesheets, images, fonts, etc) | string | nil |
+|disable_fetch | Disables fetching linked resources from disk and network| bool | false |
 
 
 ### Passing options to a Rails view template

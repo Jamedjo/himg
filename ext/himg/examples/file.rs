@@ -33,6 +33,7 @@ async fn main() {
         truncate: false,
         verbose: true,
         color_scheme: ColorScheme::Light,
+        disable_fetch: false,
         base_url: Some(base_url),
     };
 

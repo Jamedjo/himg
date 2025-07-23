@@ -32,6 +32,7 @@ impl Options {
             truncate: hash.lookup2("truncate", true)?,
             verbose: hash.lookup2("verbose", false)?,
             base_url: hash.lookup("base_url")?,
+            disable_fetch: hash.lookup2("disable_fetch", false)?,
             color_scheme: ColorScheme::Light,
         };
 

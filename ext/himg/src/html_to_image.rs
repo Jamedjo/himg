@@ -1,11 +1,13 @@
 use blitz_html::HtmlDocument;
 use blitz_net::{MpscCallback, Provider};
 use blitz_dom::DocumentConfig;
+use blitz_dom::net::Resource;
 use anyrender_vello_cpu::VelloCpuImageRenderer;
 use anyrender::render_to_buffer;
 use blitz_paint::paint_scene;
 use blitz_traits::shell::{Viewport};
 use std::sync::Arc;
+use tokio::sync::mpsc::UnboundedReceiver;
 
 use crate::image_size::ImageSize;
 use crate::logger::Logger;
@@ -16,26 +18,56 @@ pub struct RenderOutput {
     pub image_size: ImageSize,
 }
 
+struct NetFetcher {
+    provider: Arc<Provider<Resource>>,
+    receiver: UnboundedReceiver<(usize, Resource)>,
+}
+
+impl NetFetcher {
+    fn new() -> Self {
+        let (receiver, callback) = MpscCallback::new();
+        let callback = Arc::new(callback);
+        let provider = Arc::new(Provider::new(callback));
+
+        Self { provider, receiver }
+    }
+
+    fn get_provider(&self) -> Arc<Provider<Resource>> {
+        Arc::clone(&self.provider)
+    }
+
+    async fn fetch_resources(&mut self, document: &mut HtmlDocument) {
+        while !self.provider.is_empty() {
+            let Some((_, res)) = self.receiver.recv().await else {
+                break;
+            };
+            document.as_mut().load_resource(res);
+        }
+    }
+}
+
 pub async fn html_to_image(
     html: &str,
     options: Options,
     logger: &mut dyn Logger,
 ) -> RenderOutput {
-    let (mut recv, callback) = MpscCallback::new();
-    logger.log("Initial config");
+    let mut net_fetcher = if options.disable_fetch {
+        logger.log("Disabled fetching resources");
 
-    let callback = Arc::new(callback);
-    let net = Arc::new(Provider::new(callback));
-    logger.log("Setup blitz-net Provider");
+        None
+    } else {
+        let fetcher = NetFetcher::new();
+        logger.log("Setup remote resource fetcher");
 
-    logger.log("Setup dummy navigation provider");
+        Some(fetcher)
+    };
 
     // Create HtmlDocument
     let mut document = HtmlDocument::from_html(
         &html,
         DocumentConfig {
             base_url: options.base_url,
-            net_provider: Some(Arc::clone(&net) as _),
+            net_provider: net_fetcher.as_ref().map(|fetcher| fetcher.get_provider() as _),
             ..Default::default()
         },
     );
@@ -48,14 +80,10 @@ pub async fn html_to_image(
         options.color_scheme,
     ));
 
-    while !net.is_empty() {
-        let Some((_, res)) = recv.recv().await else {
-            break;
-        };
-        document.as_mut().load_resource(res);
+    if let Some(ref mut net_fetcher) = net_fetcher {
+        net_fetcher.fetch_resources(&mut document).await;
+        logger.log("Fetched assets");
     }
-
-    logger.log("Fetched assets");
 
     // Compute style, layout, etc for HtmlDocument
     document.as_mut().resolve();

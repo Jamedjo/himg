@@ -6,6 +6,7 @@ use blitz_traits::shell::ColorScheme;
 pub struct Options {
     pub image_size: ImageSize,
     pub color_scheme: ColorScheme,
+    pub disable_fetch: bool,
     pub base_url: Option<String>,
     pub truncate: bool,
     pub verbose: bool,
@@ -22,6 +23,7 @@ impl Options {
             truncate:  true,
             verbose:  false,
             base_url: None,
+            disable_fetch:  false,
             color_scheme: ColorScheme::Light,
         }
     }

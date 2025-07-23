@@ -2,6 +2,7 @@
 
 - Added bin/himg CLI screenshot tool
 - Added `base_url` option for configuring relative paths
+- Added `disable_fetch` option for security hardening
 
 ## [0.0.5] - 2025-04-22
 
