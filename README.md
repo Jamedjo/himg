@@ -2,7 +2,9 @@
 
 You give it HTML and it gives back an image!
 
-Parses a minimal subset of HTML/CSS, fetches nested resources, renders an image on the GPU. No browser, no fuss.
+Parses a minimal subset of HTML/CSS, fetches nested resources, renders an image. No browser, no fuss.
+
+Perfect for OpenGraph images - stop losing clicks to boring links by adding a rich image preview that showcases your content.
 
 ![Mockup showing HTML being transformed into a WhatsApp preview](/readme_hero.svg)
 
@@ -131,7 +133,7 @@ To play nicely with Rails a template handler is registered, which Rails' `defaul
 
 ## CAVEATS
 
-1. This is **pre-alpha** software, don't expect it to work yet.
+1. This is **pre-alpha** software, don't expect it to work perfectly yet.
 2. Performance needs tuning. Both in the underlying blitz library and how data is passed between Rust and Ruby
 3. Network requests can be made: don't use this library with untrusted inputs. Use `disable_fetch` if you don't need to fetch any resources.
 4. file:// URLs are resolved: this could expose files on your computer. Use `disable_fetch` if you don't need to fetch any resources.
