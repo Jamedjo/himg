@@ -10,6 +10,8 @@ module Himg
       @url.scheme = "file" unless @url.scheme
 
       raise Himg::Error, "Invalid base_url #{path_or_url}" if @url.path.empty?
+
+      @url.path += "/" unless @url.path.end_with?("/")
     end
 
     def to_s

@@ -12,7 +12,7 @@ RSpec.describe Himg::BaseUrl do
     end
 
     it "returns a file:// style URI" do
-      expect(Himg::BaseUrl.new("/path/to/safe/folder").to_s).to eq("file:///path/to/safe/folder")
+      expect(Himg::BaseUrl.new("/path/to/safe/folder").to_s).to eq("file:///path/to/safe/folder/")
     end
   end
 
@@ -23,7 +23,7 @@ RSpec.describe Himg::BaseUrl do
     end
 
     it "returns a file:// style URI" do
-      expect(Himg::BaseUrl.new(Pathname.new("/path/to/safe/folder")).to_s).to eq("file:///path/to/safe/folder")
+      expect(Himg::BaseUrl.new(Pathname.new("/path/to/safe/folder")).to_s).to eq("file:///path/to/safe/folder/")
     end
   end
 
@@ -33,7 +33,7 @@ RSpec.describe Himg::BaseUrl do
     end
 
     it "returns a file:// style URI" do
-      expect(Himg::BaseUrl.new("file:///path/to/safe/folder").to_s).to eq("file:///path/to/safe/folder")
+      expect(Himg::BaseUrl.new("file:///path/to/safe/folder").to_s).to eq("file:///path/to/safe/folder/")
     end
   end
 
@@ -43,8 +43,8 @@ RSpec.describe Himg::BaseUrl do
     end
 
     it "returns a http:// style URI" do
-      expect(Himg::BaseUrl.new("http://mydomain.com/assets").to_s).to eq("http://mydomain.com/assets")
-      expect(Himg::BaseUrl.new("https://mydomain.com/assets").to_s).to eq("https://mydomain.com/assets")
+      expect(Himg::BaseUrl.new("http://mydomain.com/assets").to_s).to eq("http://mydomain.com/assets/")
+      expect(Himg::BaseUrl.new("https://mydomain.com/assets").to_s).to eq("https://mydomain.com/assets/")
     end
   end
 end
