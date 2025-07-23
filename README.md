@@ -131,11 +131,10 @@ To play nicely with Rails a template handler is registered, which Rails' `defaul
 ## CAVEATS
 
 1. This is **pre-alpha** software, don't expect it to work yet.
-2. Rendering requires a GPU. Awaiting CPU support in vello, which Canva may be working on.
-3. Performance needs tuning. Both in the underlying blitz library and how data is passed between Rust and Ruby
-4. Network requests can be made: don't use this library with untrusted inputs.
-5. file:// URLs are resolved: this could expose files on your computer.
-6. Native extensions are not yet being published for different os/arch
+2. Performance needs tuning. Both in the underlying blitz library and how data is passed between Rust and Ruby
+3. Network requests can be made: don't use this library with untrusted inputs. Use `disable_fetch` if you don't need to fetch any resources.
+4. file:// URLs are resolved: this could expose files on your computer. Use `disable_fetch` if you don't need to fetch any resources.
+5. Native extensions are not yet being published for different os/arch
 
 # Development
 
