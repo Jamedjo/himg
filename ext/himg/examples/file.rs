@@ -34,6 +34,7 @@ async fn main() {
         verbose: true,
         color_scheme: ColorScheme::Light,
         disable_fetch: false,
+        fetch_timeout: 10.0,
         base_url: Some(base_url),
     };
 

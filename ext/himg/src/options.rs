@@ -7,6 +7,7 @@ pub struct Options {
     pub image_size: ImageSize,
     pub color_scheme: ColorScheme,
     pub disable_fetch: bool,
+    pub fetch_timeout: f64,
     pub base_url: Option<String>,
     pub truncate: bool,
     pub verbose: bool,
@@ -24,6 +25,7 @@ impl Options {
             verbose:  false,
             base_url: None,
             disable_fetch:  false,
+            fetch_timeout: 10.0,
             color_scheme: ColorScheme::Light,
         }
     }

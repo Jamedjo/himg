@@ -20,7 +20,7 @@ module Himg
   RENDER_OPTIONS = %i[width height truncate verbose].freeze
   class Error < StandardError; end
 
-  def self.render(html, width: 720, height: 405, truncate: true, verbose: false, base_url: nil, disable_fetch: false)
-    render_to_string(html, "width" => width.to_i, "height" => height.to_i, "truncate" => truncate, "verbose" => verbose, "base_url" => BaseUrl.new(base_url).to_s, "disable_fetch" => disable_fetch)
+  def self.render(html, width: 720, height: 405, truncate: true, verbose: false, base_url: nil, disable_fetch: false, fetch_timeout: 10)
+    render_to_string(html, "width" => width.to_i, "height" => height.to_i, "truncate" => truncate, "verbose" => verbose, "base_url" => BaseUrl.new(base_url).to_s, "disable_fetch" => disable_fetch, "fetch_timeout" => fetch_timeout.to_f)
   end
 end

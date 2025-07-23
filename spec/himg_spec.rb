@@ -94,4 +94,13 @@ RSpec.describe Himg do
       a_string_matching(/Fetched.*fixtures\/relative\.svg/)
     ).to_stdout_from_any_process
   end
+
+  it "limits fetch duration using fetch_timeout" do
+    non_resolvable_source = "http://192.0.0.1/missing.svg"
+    html_with_embed = "<!DOCTYPE html><img src='#{non_resolvable_source}'/>"
+
+    expect { Himg.render(html_with_embed, verbose: true, fetch_timeout: 0.00001) }.to output(
+      a_string_matching(/Timeout fetching assets/)
+    ).to_stdout_from_any_process
+  end
 end

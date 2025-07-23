@@ -78,6 +78,18 @@ RSpec.describe Himg::CLI do
 
         cli.invoke(:screenshot, [source_path, destination_path], truncate: false)
       end
+
+      it "respects custom fetch_timeout" do
+        expect(Himg).to receive(:render).with(anything, hash_including(fetch_timeout: 5))
+
+        cli.invoke(:screenshot, [source_path, destination_path], fetch_timeout: 5)
+      end
+
+      it "supports fractional second fetch_timeout" do
+        expect(Himg).to receive(:render).with(anything, hash_including(fetch_timeout: 0.5))
+
+        cli.invoke(:screenshot, [source_path, destination_path], fetch_timeout: 0.5)
+      end
     end
   end
 end

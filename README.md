@@ -63,6 +63,7 @@ bundle add himg
 |verbose | Enables detailed logging for debugging and profiling. | bool | false |
 |base_url | Where relative paths are relative to for linked resources (stylesheets, images, fonts, etc) | string | nil |
 |disable_fetch | Disables fetching linked resources from disk and network| bool | false |
+|fetch_timeout | Timeout in seconds for fetching resources | float | 10.0 |
 
 
 ### Passing options to a Rails view template

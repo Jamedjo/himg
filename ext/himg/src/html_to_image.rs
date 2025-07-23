@@ -4,6 +4,7 @@ use anyrender_vello_cpu::VelloCpuImageRenderer;
 use anyrender::render_to_buffer;
 use blitz_paint::paint_scene;
 use blitz_traits::shell::{Viewport};
+use tokio::time::{timeout, Duration};
 
 use crate::image_size::ImageSize;
 use crate::logger::Logger;
@@ -50,8 +51,10 @@ pub async fn html_to_image(
     ));
 
     if let Some(ref mut net_fetcher) = net_fetcher {
-        net_fetcher.fetch_resources(&mut document).await;
-        logger.log("Fetched assets");
+        match timeout(Duration::from_millis((options.fetch_timeout * 1000.0) as u64), net_fetcher.fetch_resources(&mut document)).await {
+            Ok(_) => logger.log("Fetched assets"),
+            Err(_) => logger.log("Timeout fetching assets"),
+        }
     }
 
     // Compute style, layout, etc for HtmlDocument

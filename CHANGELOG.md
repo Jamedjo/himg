@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+- Added `fetch_timeout` option to control restrict how long can be spent fetching resources.
+
 ## [0.0.6] - 2025-07-23
 
 - Added bin/himg CLI screenshot tool

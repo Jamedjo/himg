@@ -34,6 +34,7 @@ impl Options {
             verbose: hash.lookup2("verbose", false)?,
             base_url: hash.lookup("base_url")?,
             disable_fetch: hash.lookup2("disable_fetch", false)?,
+            fetch_timeout: hash.lookup2("fetch_timeout", 10.0)?,
             color_scheme: ColorScheme::Light,
         };
 
