@@ -24,9 +24,9 @@ module Himg
       CAVEATS: This uses a lightweight HTML parser instead of a full browser, so does not support all features.
       Additionally it does not use a JavaScript engine, so will screenshot the page as-is and would not work for all webpages.
     LONGDESC
-    def screenshot(url, destination, **options)
+    def screenshot(url, destination)
       Document.new(url, options).load do |content|
-        png = Himg.render(content, **options)
+        png = Himg.render(content, **options.transform_keys(&:to_sym))
 
         File.open(destination, "wb") { |f| f.write(png) }
       end
