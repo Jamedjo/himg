@@ -37,9 +37,22 @@ impl NetFetcher {
     }
 
     async fn fetch_resources(&mut self, document: &mut HtmlDocument) {
-        while !self.provider.is_empty() {
-            let Some((_, res)) = self.receiver.recv().await else {
-                break;
+        loop {
+            // Syncronous fetch before cheking is_empty to avoid race condition
+            // where is_empty's reference counting thinks there is nothing to
+            // process. This happens when the fetch fails very early.
+            let res = match self.receiver.try_recv() {
+                Ok((_, res)) => res,
+                Err(_) => {
+                    if self.provider.is_empty() {
+                        break;
+                    }
+
+                    match self.receiver.recv().await {
+                        Some((_, res)) => res,
+                        None => break,
+                    }
+                }
             };
             document.as_mut().load_resource(res);
         }
