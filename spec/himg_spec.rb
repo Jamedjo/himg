@@ -75,14 +75,14 @@ RSpec.describe Himg do
   it "fetches external resources" do
     fixture_path = Pathname.new(__FILE__).parent.join("fixtures")
     expect { Himg.render("<!DOCTYPE html><img src='file://#{fixture_path}/absolute.svg'/>", verbose: true) }.to output(
-      a_string_matching(/Fetching.*absolute.*Success.*absolute/m)
+      a_string_matching(/Fetched.*absolute/)
     ).to_stdout_from_any_process
   end
 
   it "skips fetching external resources with disable_fetch" do
     fixture_path = Pathname.new(__FILE__).parent.join("fixtures")
     expect { Himg.render("<!DOCTYPE html><img src='file://#{fixture_path}/absolute.svg'/>", verbose: true, disable_fetch: true) }.not_to output(
-      a_string_matching(/Fetching.*absolute.*Success.*absolute/m)
+      a_string_matching(/Fetched.*absolute/)
     ).to_stdout_from_any_process
   end
 
@@ -91,7 +91,7 @@ RSpec.describe Himg do
     html_with_embed = "<!DOCTYPE html><img src='./relative.svg'/>"
 
     expect { Himg.render(html_with_embed, base_url: fixture_path, verbose: true) }.to output(
-      a_string_matching(/Success file.*fixtures\/relative\.svg/)
+      a_string_matching(/Fetched.*fixtures\/relative\.svg/)
     ).to_stdout_from_any_process
   end
 end
