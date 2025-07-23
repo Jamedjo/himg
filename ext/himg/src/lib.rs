@@ -4,6 +4,7 @@ pub mod image_size;
 pub mod options;
 pub mod writer;
 pub mod logger;
+pub mod net_fetcher;
 
 pub use renderer::render_blocking;
 pub use image_size::ImageSize;
