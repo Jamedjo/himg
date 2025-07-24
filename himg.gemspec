@@ -8,8 +8,9 @@ Gem::Specification.new do |spec|
   spec.authors = ["James Edwards-Jones"]
   spec.email = ["git@jamedjo.co.uk"]
 
-  spec.summary = "The Hyper Image Generator"
-  spec.description = "You give it HTML and it renders an Image!"
+  spec.summary = "Renders HTML to an Image, perfect for OpenGraph social cards"
+  spec.description = "You give it HTML and it renders an Image! No browser required. Perfect for OpenGraph social cards so your links don't look boring when shared."
+
   spec.homepage = "https://github.com/Jamedjo/Himg"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 3.1.0"
