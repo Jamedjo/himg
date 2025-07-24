@@ -12,7 +12,6 @@ pub use options::Options;
 pub use html_to_image::html_to_image;
 pub use writer::write_png;
 
-use blitz_traits::shell::ColorScheme;
 use magnus::{function, prelude::*, ExceptionClass, Error, Ruby, RString, RHash};
 
 impl Options {
@@ -26,16 +25,16 @@ impl Options {
 
         let options = Options {
             image_size: ImageSize {
-                width: hash.lookup2("width", 720)?,
-                height: hash.lookup2("height", 405)?,
-                hidpi_scale: 1.0,
+                width: hash.lookup2("width", defaults.image_size.width)?,
+                height: hash.lookup2("height", defaults.image_size.height)?,
+                hidpi_scale: defaults.image_size.hidpi_scale,
             },
-            truncate: hash.lookup2("truncate", true)?,
-            verbose: hash.lookup2("verbose", false)?,
+            truncate: hash.lookup2("truncate", defaults.truncate)?,
+            verbose: hash.lookup2("verbose", defaults.verbose)?,
             base_url: hash.lookup("base_url")?,
-            disable_fetch: hash.lookup2("disable_fetch", false)?,
-            fetch_timeout: hash.lookup2("fetch_timeout", 10.0)?,
-            color_scheme: ColorScheme::Light,
+            disable_fetch: hash.lookup2("disable_fetch", defaults.disable_fetch)?,
+            fetch_timeout: hash.lookup2("fetch_timeout", defaults.fetch_timeout)?,
+            color_scheme: defaults.color_scheme,
         };
 
         Ok(options)
