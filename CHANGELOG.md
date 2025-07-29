@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+## [0.0.7] - 2025-07-29
+
 - Added `fetch_timeout` option to control restrict how long can be spent fetching resources.
 - Move bin/himg to exe/himg so bundler can install it in on the users PATH.
 
