@@ -2,7 +2,7 @@
 
 You give it HTML and it gives back an image!
 
-Parses a minimal subset of HTML/CSS, fetches nested resources, renders an image. No browser, no fuss.
+Parses HTML/CSS, fetches nested resources, renders an image. No browser, no fuss.
 
 Perfect for OpenGraph images - stop losing clicks to boring links by adding a rich image preview that showcases your content.
 
@@ -121,6 +121,72 @@ respond_to do |format|
   format.png { render himg: '<div>For .png URLs</div>' }
 end
 ```
+
+# Supported HTML and CSS
+
+Himg supports a large subset of the HTML and CSS you'd need to get by, but not all elements or properties are supported.
+
+For a full list, see our [snapshot of the blitz.is status page](https://github.com/Jamedjo/himg/issues/2).
+
+If something you'd like supported is missing and is available [upstream on blitz](https://blitz.is/status), please [open an issue](https://github.com/Jamedjo/himg/issues/new).
+
+|HTML|Status|
+|-|-|
+|`Generic HTML5 elements`|✅ Supported|
+|`<style>`|✅ Supported|
+|`<link rel="stylesheet">`|✅ Supported|
+|`<link rel="icon">`|❌ Not supported|
+|`<img src="">`|✅ Supported|
+|`<img srcset="">`|❌ Not supported|
+|`<picture>`|❌ Not supported|
+|`<svg>`|⚠️ [Partial support](https://github.com/Jamedjo/himg/issues/2)|
+|`<h1>-<h6>`|✅ Supported|
+|`<ul>/<ol>`|✅ Supported|
+|`<i>/<em>`|✅ Supported|
+|`<b>/<strong>`|✅ Supported|
+|`<u>`|✅ Supported|
+|`<center>`|✅ Supported|
+|`<pre>/<blockquote>`|✅ Supported|
+|`<a>`|✅ Supported|
+|`<br>`|✅ Supported|
+|`<hr>`|❌ Not supported|
+|`<details>/<summary>`|❌ Not supported|
+|`<table>`|⚠️ [Partial support](https://github.com/Jamedjo/himg/issues/2)|
+|`Form Controls`|⚠️ [Partial support](https://github.com/Jamedjo/himg/issues/2)|
+
+|CSS|Status|
+|-|-|
+|`display:inline, display:block, display:inline-block`|✅ Supported|
+|`display:none`|✅ Supported|
+|`display:flex`|✅ Supported|
+|`display:grid`|⚠️ [Partial support](https://github.com/Jamedjo/himg/issues/2)|
+|`display:table`|⚠️ [Partial support](https://github.com/Jamedjo/himg/issues/2)|
+|`display:contents`|❌ Not supported|
+|`position:relative, position:absolute`|✅ Supported|
+|`position:static, position:fixed, position:sticky`|❌ Not supported|
+|`overflow`|⚠️ [Partial support](https://github.com/Jamedjo/himg/issues/2)|
+|`z-index`|⚠️ [Partial support](https://github.com/Jamedjo/himg/issues/2)|
+|`box-sizing`|✅ Supported|
+|`float`|❌ Not supported|
+|`content (::before / ::after)`|⚠️ [Partial support](https://github.com/Jamedjo/himg/issues/2)|
+|`opacity,  visibility`|✅ Supported|
+|`width, height`|✅ Supported|
+|`min-width, max-width, min-height, max-height`|✅ Supported|
+|`padding, margin, gap`|✅ Supported|
+|`border`|⚠️ [Partial support](https://github.com/Jamedjo/himg/issues/2)|
+|`@font-face, font-size, font-family`|✅ Supported|
+|`font-weight, font-style, font-stretch`|✅ Supported|
+|`font-display, font-variant, font-feature-settings`|❌ Not supported|
+|`color, text-align, line-height, text-decoration`|✅ Supported|
+|`letter-spacing, overlap-wrap, word-wrap, word-break`|✅ Supported|
+|`vertical-align, text-transform, text-overflow`|❌ Not supported|
+|`border`|⚠️ [Partial support](https://github.com/Jamedjo/himg/issues/2)|
+|`background-color, background-image`|✅ Supported|
+|`background-size, background-position`|✅ Supported|
+|`background-repeat, background-clip, background-origin`|✅ Supported|
+|`background-attachment`|❌ Not supported|
+|`box-shadow`|✅ Supported|
+|`filter`|❌ Not supported|
 
 # How it works
 
