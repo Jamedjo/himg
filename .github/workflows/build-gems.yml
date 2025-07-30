@@ -28,25 +28,25 @@ jobs:
             os: macos-latest
             rust-target: aarch64-apple-darwin
 
-          #- platform: aarch64-linux
-          #  os: ubuntu-latest
-          #  rust-target: aarch64-unknown-linux-gnu
-          #  setup: |
-          #    sudo apt-get update && sudo apt-get install -y libssl-dev
+          - platform: aarch64-linux
+            os: ubuntu-latest
+            rust-target: aarch64-unknown-linux-gnu
+            setup: |
+              sudo apt-get update && sudo apt-get install -y libssl-dev
           #    echo "CMAKE_BUILD_PARALLEL_LEVEL=$(nproc)" >> $GITHUB_ENV
 
-          #- platform: x86_64-linux-musl
-          #  os: ubuntu-latest
-          #  rust-target: x86_64-unknown-linux-musl
-          #  setup: |
-          #    sudo apt-get update && sudo apt-get install -y musl-tools
+          - platform: x86_64-linux-musl
+            os: ubuntu-latest
+            rust-target: x86_64-unknown-linux-musl
+            setup: |
+              sudo apt-get update && sudo apt-get install -y musl-tools
           #    echo "CMAKE_BUILD_PARALLEL_LEVEL=$(nproc)" >> $GITHUB_ENV
 
-          #- platform: aarch64-linux-musl
-          #  os: ubuntu-latest
-          #  rust-target: aarch64-unknown-linux-musl
-          #  setup: |
-          #    sudo apt-get update && sudo apt-get install -y musl-tools
+          - platform: aarch64-linux-musl
+            os: ubuntu-latest
+            rust-target: aarch64-unknown-linux-musl
+            setup: |
+              sudo apt-get update && sudo apt-get install -y musl-tools
           #    echo "CMAKE_BUILD_PARALLEL_LEVEL=$(nproc)" >> $GITHUB_ENV
 
     runs-on: ${{ matrix.os }}
