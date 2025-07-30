@@ -81,7 +81,7 @@ jobs:
         with:
           pattern: native-gem-*
           merge-multiple: true
-          path: 'pkg/*.gem'
+          path: 'pkg/'
       - uses: actions/upload-artifact@v4
         with:
           name: native-gems
