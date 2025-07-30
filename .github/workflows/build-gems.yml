@@ -24,7 +24,7 @@ jobs:
             exclude: ["head"]
 
   cross-gem:
-    name: Compile native gem for ${{ matrix.platform }}
+    name: Native ${{ matrix.platform }} gem
     runs-on: ubuntu-22.04
     needs: ci-data
     strategy:
@@ -48,7 +48,7 @@ jobs:
           ruby-versions: ${{ join(fromJSON(needs.ci-data.outputs.result).stable-ruby-versions, ',') }}
       - uses: actions/upload-artifact@v4
         with:
-          name: cross-gem-${{ matrix.platform }}
+          name: native-gem-${{ matrix.platform }}
           path: ${{ steps.cross-gem.outputs.gem-path }}
 
   # Needed to link openssl
@@ -62,7 +62,7 @@ jobs:
           - platform: arm64-darwin
             os: macos-latest
     runs-on: ${{ matrix.os }}
-    name: Compile native gem for ${{ matrix.platform }}
+    name: Native ${{ matrix.platform }} gem
     steps:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
@@ -80,3 +80,17 @@ jobs:
         with:
           name: native-gem-${{ matrix.platform }}
           path: pkg/*.gem
+
+  combine-artifacts:
+    needs: [cross-gem, macos-gems]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: native-gem-*
+          merge-multiple: true
+          path: 'pkg/'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: native-gems
+          path: 'pkg/'
