@@ -5,12 +5,50 @@ on:
   push:
     tags:
       - "v*"
+    branches:
       - "cross-gem/*"
   workflow_dispatch:
 
 jobs:
-  source-gem:
-    runs-on: ubuntu-latest
+  native-gem:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: x86_64-linux
+            os: ubuntu-latest
+            setup: sudo apt-get update && sudo apt-get install -y libssl-dev
+
+          - platform: x86_64-darwin
+            os: macos-latest
+
+          #- platform: arm64-darwin
+          #  os: macos-latest
+          #  rust-target: aarch64-apple-darwin
+
+          #- platform: aarch64-linux
+          #  os: ubuntu-latest
+          #  setup: |
+          #    sudo apt-get update && sudo apt-get install -y libssl-dev
+          #    echo "CMAKE_BUILD_PARALLEL_LEVEL=$(nproc)" >> $GITHUB_ENV
+          #  rust-target: aarch64-unknown-linux-gnu
+
+          #- platform: x86_64-linux-musl
+          #  os: ubuntu-latest
+          #  setup: |
+          #    sudo apt-get update && sudo apt-get install -y musl-tools
+          #    echo "CMAKE_BUILD_PARALLEL_LEVEL=$(nproc)" >> $GITHUB_ENV
+          #  rust-target: x86_64-unknown-linux-musl
+
+          #- platform: aarch64-linux-musl
+          #  os: ubuntu-latest
+          #  setup: |
+          #    sudo apt-get update && sudo apt-get install -y musl-tools
+          #    echo "CMAKE_BUILD_PARALLEL_LEVEL=$(nproc)" >> $GITHUB_ENV
+          #  rust-target: aarch64-unknown-linux-musl
+
+    runs-on: ${{ matrix.os }}
+    name: Compile native gem for ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v4
 
@@ -18,34 +56,19 @@ jobs:
         with:
           bundler-cache: true
 
-      - name: Build gem
-        run: bundle exec rake build
+      - name: Setup environment
+        if: matrix.setup
+        run: ${{ matrix.setup }}
 
-      - uses: actions/upload-artifact@v4
+      - uses: dtolnay/rust-toolchain@stable
         with:
-          name: source-gem
-          path: pkg/*.gem
+          targets: ${{ matrix.rust-target || matrix.platform }}
 
-  linux-gems:
-    name: Build Linux gems
-    needs: source-gem
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: ruby/setup-ruby@v1
+      - uses: Swatinem/rust-cache@v2
         with:
-          bundler-cache: true
-
-      - uses: actions/download-artifact@v4
-        with:
-          name: source-gem
-
-      - run: sudo apt-get update && sudo apt-get install -y libssl-dev
-
-      #- uses: actions-rust-lang/setup-rust-toolchain@v1
-      #  with:
-      #    cache-workspaces: ./ext/himg -> target
+          workspaces: ./ext/himg -> target
+          cache-on-failure: true
+          key: ${{ matrix.platform }}
 
       - run: bundle exec rake compile
 
@@ -53,30 +76,5 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: gem-x86_64-linux
-          path: '**/*-x86_64-linux.gem'
-
-  #cross-gem:
-  #  name: Compile native gem for ${{ matrix.platform }}
-  #  runs-on: ubuntu-22.04
-  #  needs: ci-data
-  #  strategy:
-  #    matrix:
-  #      platform: ${{ fromJSON(needs.ci-data.outputs.result).supported-ruby-platforms }}
-  #  steps:
-  #    - uses: actions/checkout@v4
-  #    - uses: ruby/setup-ruby@v1
-  #      with:
-  #        bundler-cache: true
-
-  #    - uses: oxidize-rb/actions/cross-gem@v1
-  #      id: cross-gem
-  #      with:
-  #        platform: ${{ matrix.platform }}
-  #        ruby-versions: ${{ join(fromJSON(needs.ci-data.outputs.result).stable-ruby-versions, ',') }}
-
-  #    - uses: actions/upload-artifact@v4
-  #      with:
-  #        name: cross-gem-${{ matrix.platform }}
-  #        path: ${{ steps.cross-gem.outputs.gem-path }}
-
+          name: native-gem-${{ matrix.platform }}
+          path: '**/*-${{ matrix.platform }}.gem'
