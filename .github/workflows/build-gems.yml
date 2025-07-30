@@ -21,12 +21,12 @@ jobs:
             setup: sudo apt-get update && sudo apt-get install -y libssl-dev
 
           - platform: x86_64-darwin
-            os: macos-latest
+            os: macos-13
             rust-target: x86_64-apple-darwin
 
-          #- platform: arm64-darwin
-          #  os: macos-latest
-          #  rust-target: aarch64-apple-darwin
+          - platform: arm64-darwin
+            os: macos-latest
+            rust-target: aarch64-apple-darwin
 
           #- platform: aarch64-linux
           #  os: ubuntu-latest
