@@ -17,10 +17,12 @@ jobs:
         include:
           - platform: x86_64-linux
             os: ubuntu-latest
+            rust-target: x86_64-unknown-linux-gnu
             setup: sudo apt-get update && sudo apt-get install -y libssl-dev
 
           - platform: x86_64-darwin
             os: macos-latest
+            rust-target: x86_64-apple-darwin
 
           #- platform: arm64-darwin
           #  os: macos-latest
@@ -28,24 +30,24 @@ jobs:
 
           #- platform: aarch64-linux
           #  os: ubuntu-latest
+          #  rust-target: aarch64-unknown-linux-gnu
           #  setup: |
           #    sudo apt-get update && sudo apt-get install -y libssl-dev
           #    echo "CMAKE_BUILD_PARALLEL_LEVEL=$(nproc)" >> $GITHUB_ENV
-          #  rust-target: aarch64-unknown-linux-gnu
 
           #- platform: x86_64-linux-musl
           #  os: ubuntu-latest
+          #  rust-target: x86_64-unknown-linux-musl
           #  setup: |
           #    sudo apt-get update && sudo apt-get install -y musl-tools
           #    echo "CMAKE_BUILD_PARALLEL_LEVEL=$(nproc)" >> $GITHUB_ENV
-          #  rust-target: x86_64-unknown-linux-musl
 
           #- platform: aarch64-linux-musl
           #  os: ubuntu-latest
+          #  rust-target: aarch64-unknown-linux-musl
           #  setup: |
           #    sudo apt-get update && sudo apt-get install -y musl-tools
           #    echo "CMAKE_BUILD_PARALLEL_LEVEL=$(nproc)" >> $GITHUB_ENV
-          #  rust-target: aarch64-unknown-linux-musl
 
     runs-on: ${{ matrix.os }}
     name: Compile native gem for ${{ matrix.platform }}
@@ -62,7 +64,7 @@ jobs:
 
       - uses: dtolnay/rust-toolchain@stable
         with:
-          targets: ${{ matrix.rust-target || matrix.platform }}
+          targets: ${{ matrix.rust-target }}
 
       - uses: Swatinem/rust-cache@v2
         with:
