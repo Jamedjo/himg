@@ -5,9 +5,3 @@
 [workspace]
 members = ["./ext/himg"]
 resolver = "2"
-
-[profile.release]
-# By default, debug symbols are stripped from the final binary which makes it
-# harder to debug if something goes wrong. As we don't mind a larger binary size
-# we can keep these in the release build so that you can debug if needed.
-debug = true
