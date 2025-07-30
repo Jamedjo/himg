@@ -100,6 +100,8 @@ GEM
     drb (2.2.1)
     erubi (1.13.1)
     ffi (1.17.2)
+    ffi (1.17.2-arm64-darwin)
+    ffi (1.17.2-x86_64-darwin)
     ffi (1.17.2-x86_64-linux-gnu)
     fileutils (1.7.3)
     globalid (1.2.1)
@@ -140,6 +142,10 @@ GEM
     net-smtp (0.5.1)
       net-protocol
     nio4r (2.7.4)
+    nokogiri (1.18.7-arm64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.18.7-x86_64-darwin)
+      racc (~> 1.4)
     nokogiri (1.18.7-x86_64-linux-gnu)
       racc (~> 1.4)
     parallel (1.27.0)
@@ -276,6 +282,8 @@ GEM
     zeitwerk (2.7.2)
 
 PLATFORMS
+  arm64-darwin
+  x86_64-darwin
   x86_64-linux
   x86_64-linux-gnu
 
