@@ -30,19 +30,16 @@ jobs:
             rust-target: aarch64-unknown-linux-gnu
             setup: |
               sudo apt-get update && sudo apt-get install -y libssl-dev
-          #    echo "CMAKE_BUILD_PARALLEL_LEVEL=$(nproc)" >> $GITHUB_ENV
           - platform: x86_64-linux-musl
             os: ubuntu-latest
             rust-target: x86_64-unknown-linux-musl
             setup: |
               sudo apt-get update && sudo apt-get install -y musl-tools
-          #    echo "CMAKE_BUILD_PARALLEL_LEVEL=$(nproc)" >> $GITHUB_ENV
           - platform: aarch64-linux-musl
             os: ubuntu-latest
             rust-target: aarch64-unknown-linux-musl
             setup: |
               sudo apt-get update && sudo apt-get install -y musl-tools
-          #    echo "CMAKE_BUILD_PARALLEL_LEVEL=$(nproc)" >> $GITHUB_ENV
 
     runs-on: ${{ matrix.os }}
     name: Compile native gem for ${{ matrix.platform }}
@@ -51,9 +48,16 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-      - name: Setup environment
+      - name: Platform specific setup and dependencies
         if: matrix.setup
         run: ${{ matrix.setup }}
+      - name: Set parallel build level
+        run: |
+          if [[ "$RUNNER_OS" == "Linux" ]]; then
+            echo "CMAKE_BUILD_PARALLEL_LEVEL=$(nproc)" >> $GITHUB_ENV
+          elif [[ "$RUNNER_OS" == "macOS" ]]; then
+            echo "CMAKE_BUILD_PARALLEL_LEVEL=$(sysctl -n hw.ncpu)" >> $GITHUB_ENV
+          fi
       - uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ matrix.rust-target }}
