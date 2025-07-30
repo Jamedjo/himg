@@ -9,19 +9,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  ci-data:
-    runs-on: ubuntu-latest
-    outputs:
-      result: ${{ steps.fetch.outputs.result }}
-    steps:
-      - uses: oxidize-rb/actions/fetch-ci-data@v1
-        id: fetch
-        with:
-          supported-ruby-platforms: |
-            exclude: ["arm-linux", "x64-mingw32", "x64-mingw-ucrt"]
-          stable-ruby-versions: |
-            exclude: ["head"]
-
   source-gem:
     runs-on: ubuntu-latest
     steps:
@@ -39,27 +26,57 @@ jobs:
           name: source-gem
           path: pkg/*.gem
 
-  cross-gem:
-    name: Compile native gem for ${{ matrix.platform }}
-    runs-on: ubuntu-22.04
-    needs: ci-data
-    strategy:
-      matrix:
-        platform: ${{ fromJSON(needs.ci-data.outputs.result).supported-ruby-platforms }}
+  linux-gems:
+    name: Build Linux gems
+    needs: source-gem
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
 
-      - uses: oxidize-rb/actions/cross-gem@v1
-        id: cross-gem
+      - uses: actions/download-artifact@v4
         with:
-          platform: ${{ matrix.platform }}
-          ruby-versions: ${{ join(fromJSON(needs.ci-data.outputs.result).stable-ruby-versions, ',') }}
+          name: source-gem
+
+      - run: sudo apt-get update && sudo apt-get install -y libssl-dev
+
+      #- uses: actions-rust-lang/setup-rust-toolchain@v1
+      #  with:
+      #    cache-workspaces: ./ext/himg -> target
+
+      - run: bundle exec rake compile
+
+      - run: bundle exec rake native gem
 
       - uses: actions/upload-artifact@v4
         with:
-          name: cross-gem-${{ matrix.platform }}
-          path: ${{ steps.cross-gem.outputs.gem-path }}
+          name: gem-x86_64-linux
+          path: '**/*-x86_64-linux.gem'
+
+  #cross-gem:
+  #  name: Compile native gem for ${{ matrix.platform }}
+  #  runs-on: ubuntu-22.04
+  #  needs: ci-data
+  #  strategy:
+  #    matrix:
+  #      platform: ${{ fromJSON(needs.ci-data.outputs.result).supported-ruby-platforms }}
+  #  steps:
+  #    - uses: actions/checkout@v4
+  #    - uses: ruby/setup-ruby@v1
+  #      with:
+  #        bundler-cache: true
+
+  #    - uses: oxidize-rb/actions/cross-gem@v1
+  #      id: cross-gem
+  #      with:
+  #        platform: ${{ matrix.platform }}
+  #        ruby-versions: ${{ join(fromJSON(needs.ci-data.outputs.result).stable-ruby-versions, ',') }}
+
+  #    - uses: actions/upload-artifact@v4
+  #      with:
+  #        name: cross-gem-${{ matrix.platform }}
+  #        path: ${{ steps.cross-gem.outputs.gem-path }}
 
