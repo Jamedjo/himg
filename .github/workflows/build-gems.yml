@@ -37,13 +37,13 @@ jobs:
             rust-target: x86_64-unknown-linux-musl
             docker-platform: linux/amd64
             docker-image: ruby:3.4-alpine
-            setup: apk add --no-cache build-base openssl-dev curl git yaml-dev
+            setup: apk add --no-cache build-base openssl-dev curl git yaml-dev python3
           - platform: aarch64-linux-musl
             os: ubuntu-latest
             rust-target: aarch64-unknown-linux-musl
             docker-platform: linux/arm64
             docker-image: ruby:3.4-alpine
-            setup: apk add --no-cache build-base openssl-dev curl git yaml-dev
+            setup: apk add --no-cache build-base openssl-dev curl git yaml-dev python3
 
     runs-on: ${{ matrix.os }}
     name: Compile native gem for ${{ matrix.platform }}
