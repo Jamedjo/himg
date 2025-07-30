@@ -25,50 +25,95 @@ jobs:
           - platform: arm64-darwin
             os: macos-latest
             rust-target: aarch64-apple-darwin
+
           - platform: aarch64-linux
             os: ubuntu-latest
             rust-target: aarch64-unknown-linux-gnu
-            setup: |
-              sudo apt-get update && sudo apt-get install -y libssl-dev
+            docker-platform: linux/arm64
+            docker-image: ruby:3.4
+            setup: apt-get update && apt-get install -y libssl-dev
           - platform: x86_64-linux-musl
             os: ubuntu-latest
             rust-target: x86_64-unknown-linux-musl
-            setup: |
-              sudo apt-get update && sudo apt-get install -y musl-tools
+            docker-platform: linux/amd64
+            docker-image: ruby:3.4-alpine
+            setup: apk add --no-cache build-base openssl-dev curl git yaml-dev
           - platform: aarch64-linux-musl
             os: ubuntu-latest
             rust-target: aarch64-unknown-linux-musl
-            setup: |
-              sudo apt-get update && sudo apt-get install -y musl-tools
+            docker-platform: linux/arm64
+            docker-image: ruby:3.4-alpine
+            setup: apk add --no-cache build-base openssl-dev curl git yaml-dev
 
     runs-on: ${{ matrix.os }}
     name: Compile native gem for ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v4
+
+      # Native build setup
       - uses: ruby/setup-ruby@v1
+        if: '!matrix.docker-image'
         with:
+          ruby-version: 3.4
           bundler-cache: true
       - name: Platform specific setup and dependencies
-        if: matrix.setup
+        if: '!matrix.docker-image && matrix.setup'
         run: ${{ matrix.setup }}
       - name: Set parallel build level
+        if: '!matrix.docker-image'
         run: |
           if [[ "$RUNNER_OS" == "Linux" ]]; then
             echo "CMAKE_BUILD_PARALLEL_LEVEL=$(nproc)" >> $GITHUB_ENV
           elif [[ "$RUNNER_OS" == "macOS" ]]; then
             echo "CMAKE_BUILD_PARALLEL_LEVEL=$(sysctl -n hw.ncpu)" >> $GITHUB_ENV
           fi
-      - name: Set Ruby platform
-        run: echo "RUBY_PLATFORM=${{ matrix.platform }}" >> $GITHUB_ENV
       - uses: dtolnay/rust-toolchain@stable
+        if: '!matrix.docker-image'
         with:
           targets: ${{ matrix.rust-target }}
       - uses: Swatinem/rust-cache@v2
+        if: '!matrix.docker-image'
         with:
           workspaces: ./ext/himg -> target
           cache-on-failure: true
           key: ${{ matrix.platform }}
-      - run: bundle exec rake native:${{ matrix.platform }} gem:${{ matrix.platform }}
+      - name: Build gem (native build)
+        if: '!matrix.docker-image'
+        run: |
+          bundle exec rake compile
+          bundle exec rake native gem
+
+      # Docker/QEMU cross compile build
+      - name: Set up QEMU
+        if: matrix.docker-image
+        uses: docker/setup-qemu-action@v3
+      - name: Build gem (Docker build)
+        if: matrix.docker-image
+        run: |
+          docker run --rm \
+            --platform ${{ matrix.docker-platform }} \
+            -v $PWD:/work \
+            -w /work \
+            ${{ matrix.docker-image }} \
+            sh -c "
+              set -ex
+
+              # Install dependencies
+              ${{ matrix.setup }}
+
+              # Install Rust
+              curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable
+              . \$HOME/.cargo/env
+
+              # Install bundler and gems
+              gem install bundler
+              bundle install
+
+              # Build the gem
+              bundle exec rake compile
+              bundle exec rake native gem
+            "
+
       - uses: actions/upload-artifact@v4
         with:
           name: native-gem-${{ matrix.platform }}
