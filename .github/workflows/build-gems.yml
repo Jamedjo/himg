@@ -19,29 +19,24 @@ jobs:
             os: ubuntu-latest
             rust-target: x86_64-unknown-linux-gnu
             setup: sudo apt-get update && sudo apt-get install -y libssl-dev
-
           - platform: x86_64-darwin
             os: macos-13
             rust-target: x86_64-apple-darwin
-
           - platform: arm64-darwin
             os: macos-latest
             rust-target: aarch64-apple-darwin
-
           - platform: aarch64-linux
             os: ubuntu-latest
             rust-target: aarch64-unknown-linux-gnu
             setup: |
               sudo apt-get update && sudo apt-get install -y libssl-dev
           #    echo "CMAKE_BUILD_PARALLEL_LEVEL=$(nproc)" >> $GITHUB_ENV
-
           - platform: x86_64-linux-musl
             os: ubuntu-latest
             rust-target: x86_64-unknown-linux-musl
             setup: |
               sudo apt-get update && sudo apt-get install -y musl-tools
           #    echo "CMAKE_BUILD_PARALLEL_LEVEL=$(nproc)" >> $GITHUB_ENV
-
           - platform: aarch64-linux-musl
             os: ubuntu-latest
             rust-target: aarch64-unknown-linux-musl
@@ -53,30 +48,35 @@ jobs:
     name: Compile native gem for ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v4
-
       - uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-
       - name: Setup environment
         if: matrix.setup
         run: ${{ matrix.setup }}
-
       - uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ matrix.rust-target }}
-
       - uses: Swatinem/rust-cache@v2
         with:
           workspaces: ./ext/himg -> target
           cache-on-failure: true
           key: ${{ matrix.platform }}
-
       - run: bundle exec rake compile
-
       - run: bundle exec rake native gem
-
       - uses: actions/upload-artifact@v4
         with:
           name: native-gem-${{ matrix.platform }}
           path: '**/*-${{ matrix.platform }}.gem'
+
+  combine-artifacts:
+    needs: native-gem
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: native-gem-*
+          merge-multiple: true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: native-gems
