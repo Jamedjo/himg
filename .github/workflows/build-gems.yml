@@ -68,8 +68,7 @@ jobs:
           workspaces: ./ext/himg -> target
           cache-on-failure: true
           key: ${{ matrix.platform }}
-      - run: bundle exec rake compile
-      - run: bundle exec rake native gem
+      - run: bundle exec rake native:${{ matrix.platform }} gem:${{ matrix.platform }}
       - uses: actions/upload-artifact@v4
         with:
           name: native-gem-${{ matrix.platform }}
