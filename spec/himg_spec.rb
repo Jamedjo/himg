@@ -15,6 +15,42 @@ RSpec.describe Himg do
     dimensions(png_data).last
   end
 
+  def image_data(png_data)
+    require "zlib"
+
+    idat_pos = png_data.index("IDAT")
+    raise "No IDAT chunk found" unless idat_pos
+
+    idat_length = png_data[idat_pos - 4, 4].unpack('N')[0]
+    Zlib::Inflate.inflate(png_data[idat_pos + 4, idat_length])
+  end
+
+  def pixel_at(png_data, x, y)
+    png_filters = %i[none sub up average paeth]
+
+    w, h = dimensions(png_data)
+    decompressed = image_data(png_data)
+
+    row_length = 1 + (w * 4)
+    row_start = y * row_length
+    filter_type = decompressed[row_start].ord
+    filter_name = png_filters[filter_type]
+    row_data = decompressed[row_start + 1, w * 4].unpack('C*')
+
+    case filter_name
+    when :none
+      # No filtering needed
+    when :sub
+      (4...row_data.length).each do |i|
+        row_data[i] = (row_data[i] + row_data[i - 4]) & 0xFF
+      end
+    else
+      raise "Unsupported PNG filter type: #{filter_name || 'unknown'}"
+    end
+
+    row_data[x * 4, 4]
+  end
+
   it "has a version number" do
     expect(Himg::VERSION).not_to be nil
   end
@@ -150,6 +186,18 @@ RSpec.describe Himg do
 
   it "handles invalid parameters at the Rust boundary" do
     expect { Himg.render_to_string(123, {}) }.to raise_error(TypeError)
+  end
+
+  it "renders blue background color correctly", :aggregate_failures do
+    html_with_blue_bg = '<html style="background-color: blue;"></html>'
+
+    png_data = Himg.render(html_with_blue_bg, width: 10, height: 10)
+
+    expect(pixel_at(png_data, 0, 0)).to eq([0, 0, 255, 255])
+    expect(pixel_at(png_data, 9, 0)).to eq([0, 0, 255, 255])
+    expect(pixel_at(png_data, 0, 9)).to eq([0, 0, 255, 255])
+    expect(pixel_at(png_data, 9, 9)).to eq([0, 0, 255, 255])
+    expect(pixel_at(png_data, 5, 5)).to eq([0, 0, 255, 255])
   end
 
   it "handles malformed URLs that might cause parsing issues" do
