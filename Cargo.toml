@@ -5,3 +5,7 @@
 [workspace]
 members = ["./ext/himg"]
 resolver = "2"
+
+[profile.profiling]
+inherits = "release"
+debug = true

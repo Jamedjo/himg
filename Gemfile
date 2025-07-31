@@ -7,3 +7,4 @@ gemspec
 
 gem "puma"
 gem "rails"
+gem "stackprof"

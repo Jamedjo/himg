@@ -245,6 +245,7 @@ GEM
       prism (~> 1.4)
     ruby-progressbar (1.13.0)
     securerandom (0.4.1)
+    stackprof (0.2.27)
     steep (1.10.0)
       activesupport (>= 5.1)
       concurrent-ruby (>= 1.1.10)
@@ -299,6 +300,7 @@ DEPENDENCIES
   rake-compiler
   rspec
   rubocop
+  stackprof
   steep
 
 BUNDLED WITH
