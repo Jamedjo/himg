@@ -46,9 +46,24 @@ pub fn render_blocking_rb(ruby: &Ruby, html: String, options: Option<RHash>) -> 
     let options = Options::from_ruby(options)?;
     let exception_class = ExceptionClass::from_value(magnus::eval("Himg::Error").unwrap()).unwrap();
 
-    match render_blocking(html, options) {
-        Ok(data) => Ok(ruby.str_from_slice(&data)),
-        Err(e) => Err(Error::new(exception_class, format!("{}", e))),
+    let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+        render_blocking(html, options)
+    }));
+
+    match result {
+        Ok(Ok(data)) => Ok(ruby.str_from_slice(&data)),
+        Ok(Err(e)) => Err(Error::new(exception_class, format!("{}", e))),
+        Err(panic) => {
+            let msg = if let Some(s) = panic.downcast_ref::<String>() {
+                s.clone()
+            } else if let Some(s) = panic.downcast_ref::<&str>() {
+                s.to_string()
+            } else {
+                "Unknown panic".to_string()
+            };
+
+            Err(Error::new(exception_class, format!("Panic: {}", msg)))
+        }
     }
 }
 

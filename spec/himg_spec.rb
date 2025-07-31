@@ -112,4 +112,39 @@ RSpec.describe Himg do
       expect(png_string).to start_with("\x89PNG\r\n\x1A\n".b)
     end
   end
+
+  it "handles invalid parameters at the Rust boundary" do
+    expect { Himg.render_to_string(123, {}) }.to raise_error(TypeError)
+  end
+
+  it "handles malformed URLs that might cause parsing issues" do
+    html_with_malformed_urls = <<~HTML
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <link rel="stylesheet" href="https://xn--🦀⚡🌐📸🖼️.com/invalid_domain_name.css">
+          <link rel="stylesheet" href="http://:80/empty_host.css">
+          <link rel="stylesheet" href="http://example.com:badport/bad_port.css">
+          <link rel="stylesheet" href="http://example.com:999999/bad_port_number.css">
+          <link rel="stylesheet" href="http://256.256.256.256/invalid_ip_address.css">
+          <link rel="stylesheet" href="http://[:::1]/invalid_ipv6_address.css">
+          <link rel="stylesheet" href="http://exa mple.com/invalid_domain_character.css">
+          <link rel="stylesheet" href="./no/base/relative_url_without_base.css">
+          <link rel="stylesheet" href="mailto:relative.url@cannot.be.a.base.com">
+          <link rel="stylesheet" href="https://example.com:9999999999999999999999/overflow.css">
+        </head>
+        <body>
+          <a href="http://[invalid-ipv6">Invalid IPv6</a>
+          <a href="http://example.com:99999">Invalid port</a>
+          <a href="http://:80">Missing host</a>
+          <a href="http://user@:80">User info without host</a>
+          <a href="http://256.256.256.256">Invalid IP</a>
+          <img src="http://example.com/path with spaces/image.png">
+          <img src="http://example.com/path%ZZ">Invalid percent encoding</img>
+        </body>
+      </html>
+    HTML
+
+    expect { Himg.render(html_with_malformed_urls) }.to raise_error(Himg::Error, /Panic:.*to be able to resolve/)
+  end
 end
