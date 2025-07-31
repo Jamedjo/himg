@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+- Compile native Apple darwin/macos gems for intel and arm.
+- Remove debug symbols saving 315MB on the binary size.
+
 ## [0.0.7] - 2025-07-29
 
 - Added `fetch_timeout` option to control restrict how long can be spent fetching resources.
