@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+
+## [0.0.9] - 2025-07-31
+
 - Returned to CPU-only rendering by default
 - Added `gpu` option to enable GPU rendering 
 - Updated to latest blitz to fix blue/green colour swap on images
