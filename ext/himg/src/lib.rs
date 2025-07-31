@@ -45,6 +45,7 @@ impl Options {
 pub fn render_blocking_rb(ruby: &Ruby, html: String, options: Option<RHash>) -> Result<RString, Error> {
     let options = Options::from_ruby(options)?;
     let exception_class = ExceptionClass::from_value(magnus::eval("Himg::Error").unwrap()).unwrap();
+    let gpu_not_found_class = ExceptionClass::from_value(magnus::eval("Himg::GpuNotFound").unwrap()).unwrap();
 
     let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
         render_blocking(html, options)
@@ -62,7 +63,11 @@ pub fn render_blocking_rb(ruby: &Ruby, html: String, options: Option<RHash>) -> 
                 "Unknown panic".to_string()
             };
 
-            Err(Error::new(exception_class, format!("Panic: {}", msg)))
+            if msg.contains("No compatible device found") {
+                Err(Error::new(gpu_not_found_class, msg))
+            } else {
+                Err(Error::new(exception_class, format!("Panic: {}", msg)))
+            }
         }
     }
 }

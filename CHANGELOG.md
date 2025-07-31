@@ -2,6 +2,7 @@
 
 - Fixed himg require from native extension
 - Catch rust panics and wrap with ruby Error
+- GpuNotFound error extending Himg::Error
 
 ## [0.0.9] - 2025-07-31
 
