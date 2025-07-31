@@ -72,16 +72,29 @@ RSpec.describe Himg do
     ).to_stdout_from_any_process
   end
 
-  it "fetches external resources" do
+  it "fetches external resources from file:// URLs" do
     fixture_path = Pathname.new(__FILE__).parent.join("fixtures")
-    expect { Himg.render("<!DOCTYPE html><img src='file://#{fixture_path}/absolute.svg'/>", verbose: true) }.to output(
+    html_with_file_resource = "<!DOCTYPE html><img src='file://#{fixture_path}/absolute.svg'/>"
+
+    expect { Himg.render(html_with_file_resource, verbose: true) }.to output(
       a_string_matching(/Fetched.*absolute/)
+    ).to_stdout_from_any_process
+  end
+
+  it "fetches external resources from https:// URLs" do
+    https_image_link = "https://github.com/github.png?size=5"
+    html_with_https_resource = "<!DOCTYPE html><img src='#{https_image_link}'/>"
+
+    expect { Himg.render(html_with_https_resource, verbose: true) }.to output(
+      a_string_matching(/Fetched.*github\.png/)
     ).to_stdout_from_any_process
   end
 
   it "skips fetching external resources with disable_fetch" do
     fixture_path = Pathname.new(__FILE__).parent.join("fixtures")
-    expect { Himg.render("<!DOCTYPE html><img src='file://#{fixture_path}/absolute.svg'/>", verbose: true, disable_fetch: true) }.not_to output(
+    html_with_external_resource = "<!DOCTYPE html><img src='file://#{fixture_path}/absolute.svg'/>"
+
+    expect { Himg.render(html_with_external_resource, verbose: true, disable_fetch: true) }.not_to output(
       a_string_matching(/Fetched.*absolute/)
     ).to_stdout_from_any_process
   end
@@ -93,6 +106,20 @@ RSpec.describe Himg do
     expect { Himg.render(html_with_embed, base_url: fixture_path, verbose: true) }.to output(
       a_string_matching(/Fetched.*fixtures\/relative\.svg/)
     ).to_stdout_from_any_process
+  end
+
+  it "raises a friendly error when attempting to fetch a relative resource but base_url is not set" do
+    fixture_path = Pathname.new(__FILE__).parent.join("fixtures")
+    html_with_embed = "<!DOCTYPE html><img src='./readme_hero.svg'/>"
+
+    expect { Himg.render(html_with_embed) }.to raise_error(Himg::Error, /to be able to resolve.*base_url/)
+  end
+
+  it "raises a friendly error when attempting to fetch a relative resource but base_url is blank" do
+    fixture_path = Pathname.new(__FILE__).parent.join("fixtures")
+    html_with_embed = "<!DOCTYPE html><img src='./readme_hero.svg'/>"
+
+    expect { Himg.render(html_with_embed, base_url: " ") }.to raise_error(Himg::Error, /to be able to resolve.*base_url/)
   end
 
   it "limits fetch duration using fetch_timeout" do
