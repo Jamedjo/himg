@@ -99,6 +99,14 @@ RSpec.describe Himg do
     ).to_stdout_from_any_process
   end
 
+  it "fetching missing resources is handled gracefully" do
+    html_with_missing_resource = "<!DOCTYPE html><img src='file:///does_not_exist.png'/>"
+
+    png_string = Himg.render(html_with_missing_resource)
+
+    expect(png_string).not_to be_empty
+  end
+
   it "fetches resources relative to a base_url" do
     fixture_path = Pathname.new(__FILE__).parent.join("fixtures")
     html_with_embed = "<!DOCTYPE html><img src='./relative.svg'/>"
