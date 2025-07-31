@@ -19,7 +19,7 @@ blitz-dom = { version = "0.1.0-rc.1" }
 blitz-net = { version = "0.1.0-rc.1" }
 blitz-paint = { version = "0.1.0-rc.1" }
 anyrender = { version = "0.5.0" }
-anyrender_vello_cpu = { version = "0.5.0" }
+anyrender_vello = { version = "0.5.0" }
 blitz-html = { version = "0.1.0-rc.1" }
 tokio = { version = "1.46", features =  ["rt-multi-thread", "macros"] }
 png = "0.17"

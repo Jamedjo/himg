@@ -1,6 +1,6 @@
 use blitz_html::HtmlDocument;
 use blitz_dom::DocumentConfig;
-use anyrender_vello_cpu::VelloCpuImageRenderer;
+use anyrender_vello::VelloImageRenderer;
 use anyrender::render_to_buffer;
 use blitz_paint::paint_scene;
 use blitz_traits::shell::{Viewport};
@@ -79,7 +79,7 @@ pub async fn html_to_image(
     }
 
     // Render document to RGBA buffer
-    let buffer = render_to_buffer::<VelloCpuImageRenderer, _>(
+    let buffer = render_to_buffer::<VelloImageRenderer, _>(
         |scene| paint_scene(
             scene,
             document.as_ref(),

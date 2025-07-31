@@ -1,5 +1,6 @@
 ## [Unreleased]
 
+- Return to GPU rendering by default: quality is low with CPU rendering.
 - Compile native Apple darwin/macos gems for intel and arm.
 - Remove debug symbols saving 315MB on the binary size.
 
@@ -10,6 +11,8 @@
 
 ## [0.0.6] - 2025-07-23
 
+- Updates to latest blitz
+- Renders on CPU instead of GPU (experimental)
 - Added bin/himg CLI screenshot tool
 - Added `base_url` option for configuring relative paths
 - Added `disable_fetch` option for security hardening
