@@ -3,6 +3,7 @@ class UsersController < ActionController::Base
 
   def show
     himg_config(width: params[:w]) if params[:w]
+    himg_config(gpu: true) if params[:gpu]
 
     @user = User.new(username: params[:id].titlecase)
   end
