@@ -8,6 +8,7 @@ pub struct Options {
     pub color_scheme: ColorScheme,
     pub disable_fetch: bool,
     pub fetch_timeout: f64,
+    pub gpu: bool,
     pub base_url: Option<String>,
     pub truncate: bool,
     pub verbose: bool,
@@ -26,6 +27,7 @@ impl Options {
             base_url: None,
             disable_fetch:  false,
             fetch_timeout: 10.0,
+            gpu: false,
             color_scheme: ColorScheme::Light,
         }
     }

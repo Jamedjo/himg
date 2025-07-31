@@ -1,5 +1,6 @@
 use blitz_html::HtmlDocument;
 use blitz_dom::DocumentConfig;
+use anyrender_vello::VelloImageRenderer;
 use anyrender_vello_cpu::VelloCpuImageRenderer;
 use anyrender::render_to_buffer;
 use blitz_paint::paint_scene;
@@ -79,17 +80,31 @@ pub async fn html_to_image(
     }
 
     // Render document to RGBA buffer
-    let buffer = render_to_buffer::<VelloCpuImageRenderer, _>(
-        |scene| paint_scene(
-            scene,
-            document.as_ref(),
-            render_size.hidpi_scale,
+    let buffer = if options.gpu {
+        render_to_buffer::<VelloImageRenderer, _>(
+            |scene| paint_scene(
+                scene,
+                document.as_ref(),
+                render_size.hidpi_scale,
+                render_size.scaled_width(),
+                render_size.scaled_height(),
+            ),
             render_size.scaled_width(),
             render_size.scaled_height(),
-        ),
-        render_size.scaled_width(),
-        render_size.scaled_height(),
-    );
+        )
+    } else {
+        render_to_buffer::<VelloCpuImageRenderer, _>(
+            |scene| paint_scene(
+                scene,
+                document.as_ref(),
+                render_size.hidpi_scale,
+                render_size.scaled_width(),
+                render_size.scaled_height(),
+            ),
+            render_size.scaled_width(),
+            render_size.scaled_height(),
+        )
+    };
 
     logger.log("Rendered to buffer");
 

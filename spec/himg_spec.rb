@@ -103,4 +103,13 @@ RSpec.describe Himg do
       a_string_matching(/Timeout fetching assets/)
     ).to_stdout_from_any_process
   end
+
+  it "accepts gpu option for GPU rendering" do
+    if ENV['CI']
+      expect { Himg.render("<html></html>", gpu: true) }.to raise_error(/No compatible device found/)
+    else
+      png_string = Himg.render("<html></html>", gpu: true)
+      expect(png_string).to start_with("\x89PNG\r\n\x1A\n".b)
+    end
+  end
 end

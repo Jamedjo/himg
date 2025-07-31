@@ -12,6 +12,7 @@ module Himg
     option :verbose, type: :boolean, desc: "Enables detailed logging for debugging and profiling.", default: false
     option :disable_fetch, type: :boolean, desc: "Skip fetching file/http resources (stylesheets, images, fonts, etc)", default: false
     option :fetch_timeout, type: :numeric, desc: "Timeout in seconds for fetching resources", default: 10
+    option :gpu, type: :boolean, desc: "Use GPU renderer instead of CPU renderer", default: false
     option :http_headers, desc: "HTTP Headers to use when fetching remote resource"
     option :base_url, desc: "Base URL used to resolve relative URLs"
 

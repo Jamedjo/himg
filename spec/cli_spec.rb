@@ -90,6 +90,18 @@ RSpec.describe Himg::CLI do
 
         cli.invoke(:screenshot, [source_path, destination_path], fetch_timeout: 0.5)
       end
+
+      it "respects gpu flag" do
+        expect(Himg).to receive(:render).with(anything, hash_including(gpu: true))
+
+        cli.invoke(:screenshot, [source_path, destination_path], gpu: true)
+      end
+
+      it "defaults gpu to false" do
+        expect(Himg).to receive(:render).with(anything, hash_including(gpu: false))
+
+        cli.invoke(:screenshot, [source_path, destination_path])
+      end
     end
   end
 end

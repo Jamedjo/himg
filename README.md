@@ -67,6 +67,7 @@ bundle add himg
 |base_url | Where relative paths are relative to for linked resources (stylesheets, images, fonts, etc) | string | nil |
 |disable_fetch | Disables fetching linked resources from disk and network| bool | false |
 |fetch_timeout | Timeout in seconds for fetching resources | float | 10.0 |
+|gpu | Use GPU renderer instead of CPU renderer | bool | false |
 
 
 ### Passing options to a Rails view template

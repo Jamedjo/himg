@@ -34,6 +34,7 @@ impl Options {
             base_url: hash.lookup("base_url")?,
             disable_fetch: hash.lookup2("disable_fetch", defaults.disable_fetch)?,
             fetch_timeout: hash.lookup2("fetch_timeout", defaults.fetch_timeout)?,
+            gpu: hash.lookup2("gpu", defaults.gpu)?,
             color_scheme: defaults.color_scheme,
         };
 

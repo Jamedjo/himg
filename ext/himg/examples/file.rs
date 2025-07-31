@@ -35,6 +35,7 @@ async fn main() {
         color_scheme: ColorScheme::Light,
         disable_fetch: false,
         fetch_timeout: 10.0,
+        gpu: false,
         base_url: Some(base_url),
     };
 
