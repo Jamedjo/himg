@@ -1,5 +1,7 @@
 ## [Unreleased]
 
+- Returned to CPU-only rendering
+- Updated to latest blitz to fix blue/green colour swap on images
 
 ## [0.0.8] - 2025-07-31
 

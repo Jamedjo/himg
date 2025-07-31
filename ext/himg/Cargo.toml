@@ -14,13 +14,13 @@ crate-type = ["cdylib", "rlib"]
 [dependencies]
 magnus = { version = "0.7.1" }
 rb-sys = { version = "0.9", features = ["stable-api-compiled-fallback"] }
-blitz-traits = { version = "0.1.0-rc.1" }
-blitz-dom = { version = "0.1.0-rc.1" }
-blitz-net = { version = "0.1.0-rc.1" }
-blitz-paint = { version = "0.1.0-rc.1" }
+blitz-traits = { version = "0.1.0-rc.2" }
+blitz-dom = { version = "0.1.0-rc.2" }
+blitz-net = { version = "0.1.0-rc.2" }
+blitz-paint = { version = "0.1.0-rc.2" }
 anyrender = { version = "0.5.0" }
-anyrender_vello = { version = "0.5.0" }
-blitz-html = { version = "0.1.0-rc.1" }
+anyrender_vello_cpu = { version = "0.5.1" }
+blitz-html = { version = "0.1.0-rc.2" }
 tokio = { version = "1.46", features =  ["rt-multi-thread", "macros"] }
 png = "0.17"
 openssl = { version = "0.10", features = ["vendored"] }
