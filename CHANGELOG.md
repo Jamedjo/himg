@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+
+## [0.0.8] - 2025-07-31
+
 - Return to GPU rendering by default: quality is low with CPU rendering.
 - Compile native Apple darwin/macos gems for intel and arm.
 - Remove debug symbols saving 315MB on the binary size.
