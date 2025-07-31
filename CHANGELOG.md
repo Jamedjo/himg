@@ -1,5 +1,6 @@
 ## [Unreleased]
 
+- Fixed himg require from native extension
 
 ## [0.0.9] - 2025-07-31
 
