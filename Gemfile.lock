@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    himg (0.0.9)
+    himg (0.0.10)
       rb_sys (~> 0.9)
 
 GEM
