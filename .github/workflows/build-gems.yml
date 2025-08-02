@@ -10,9 +10,23 @@ on:
   workflow_dispatch:
 
 jobs:
+  ci-data:
+    runs-on: ubuntu-latest
+    outputs:
+      result: ${{ steps.fetch.outputs.result }}
+    steps:
+      - uses: oxidize-rb/actions/fetch-ci-data@v1
+        id: fetch
+        with:
+          supported-ruby-platforms: |
+            exclude: ["arm-linux", "x64-mingw32", "x64-mingw-ucrt"]
+          stable-ruby-versions: |
+            exclude: ["head"]
+
   cross-gem:
     name: Native ${{ matrix.platform }} gem
     runs-on: ubuntu-22.04
+    needs: ci-data
     strategy:
       fail-fast: false
       matrix:
@@ -31,7 +45,7 @@ jobs:
         id: cross-gem
         with:
           platform: ${{ matrix.platform }}
-          ruby-versions: "3.2,3.3,3.4"
+          ruby-versions: ${{ join(fromJSON(needs.ci-data.outputs.result).stable-ruby-versions, ',') }}
       - uses: actions/upload-artifact@v4
         with:
           name: native-gem-${{ matrix.platform }}
