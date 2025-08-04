@@ -302,6 +302,7 @@ DEPENDENCIES
   rubocop
   stackprof
   steep
+  thor
 
 BUNDLED WITH
    2.6.7

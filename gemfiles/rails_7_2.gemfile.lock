@@ -278,6 +278,7 @@ DEPENDENCIES
   rspec
   rspec-rails (~> 7.0)
   rubocop
+  thor
 
 BUNDLED WITH
    2.6.7
