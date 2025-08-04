@@ -14,7 +14,7 @@ module Himg
     option :disable_fetch, type: :boolean, desc: "Skip fetching file/http resources (stylesheets, images, fonts, etc)", default: false
     option :fetch_timeout, type: :numeric, desc: "Timeout in seconds for fetching resources", default: 10
     option :gpu, type: :boolean, desc: "Use GPU renderer instead of CPU renderer", default: false
-    option :http_headers, desc: "HTTP Headers to use when fetching remote resource"
+    option :http_headers, type: :hash, desc: "HTTP headers sent when fetching the SOURCE_HTML (e.g. --http-headers \"Authorization: Bearer token\" \"Content-Type: application/json\")"
     option :base_url, desc: "Base URL used to resolve relative URLs"
 
     long_desc <<-LONGDESC
@@ -28,6 +28,8 @@ module Himg
       Additionally it does not use a JavaScript engine, so will screenshot the page as-is and would not work for all webpages.
     LONGDESC
     def screenshot(url, destination)
+      options[:http_headers]&.transform_values!(&:strip)
+
       Document.new(url, options).load do |content|
         render_options = options.transform_keys(&:to_sym)
         render_options[:base_url] ||= base_directory_url(url) if Document.http_url?(url)
@@ -52,6 +54,7 @@ module Himg
       def initialize(source, options)
         @source = source
         @options = options
+        @http_headers = options[:http_headers]
       end
 
       def self.http_url?(url)
@@ -60,7 +63,10 @@ module Himg
 
       def load(&block)
         if self.class.http_url?(@source)
-          URI.send(:open, @source) do |input|
+          args = [@source]
+          args << @http_headers if @http_headers
+
+          URI.open(*args) do |input|
             yield(input.binmode.read)
           end
         else

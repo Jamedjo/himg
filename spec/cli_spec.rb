@@ -18,7 +18,7 @@ RSpec.describe Himg::CLI do
       let(:source_path) { "http://an.example" }
 
       it "network fetches the content" do
-        expect(URI).to receive(:send).with(:open, source_path)
+        expect(URI).to receive(:open).with(source_path)
 
         cli.invoke(:screenshot, [source_path, destination_path], verbose: true)
       end
@@ -129,6 +129,35 @@ RSpec.describe Himg::CLI do
         expect(Himg).to receive(:render).with(anything, hash_including(base_url: "https://github.com/Jamedjo/himg/"))
 
         source_path = "https://github.com/Jamedjo/himg/"
+
+        cli.invoke(:screenshot, [source_path, destination_path])
+      end
+
+      it "passes http_headers to Himg renderer" do
+        expect(Himg).to receive(:render).with(anything, hash_including(http_headers: {"Authorization" => "Bearer token"}))
+
+        cli.invoke(:screenshot, [source_path, destination_path], http_headers: {"Authorization" => "Bearer token"})
+      end
+
+      it "strips whitespace from header values" do
+        expect(Himg).to receive(:render).with(anything, hash_including(http_headers: {"Authorization" => "Bearer token"}))
+
+        cli.invoke(:screenshot, [source_path, destination_path], http_headers: {"Authorization" => " Bearer token "})
+      end
+
+      it "uses http_headers when fetching http URLs" do
+        source_path = "https://frankie.cool"
+        headers = {"Authorization" => "Bearer token"}
+
+        expect(URI).to receive(:open).with(source_path, headers)
+
+        cli.invoke(:screenshot, [source_path, destination_path], http_headers: headers)
+      end
+
+      it "handles nil http_headers for http URLs" do
+        source_path = "https://frankie.cool"
+
+        expect(URI).to receive(:open).with(source_path)
 
         cli.invoke(:screenshot, [source_path, destination_path])
       end
