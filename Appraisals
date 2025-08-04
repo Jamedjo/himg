@@ -16,6 +16,7 @@ appraise "rails-6" do
   gem "concurrent-ruby", "1.3.4" # Logger dependency fix, see: https://stackoverflow.com/questions/79360526/uninitialized-constant-activesupportloggerthreadsafelevellogger-nameerror
   gem "bigdecimal", "~> 1.4" # See: https://github.com/rails/rails/issues/34822
   gem "drb"
+  gem "mutex_m"
 end
 
 appraise "rails-7-0" do
@@ -28,6 +29,7 @@ appraise "rails-7-0" do
   gem "concurrent-ruby", "1.3.4" # Logger dependency fix, see: https://stackoverflow.com/questions/79360526/uninitialized-constant-activesupportloggerthreadsafelevellogger-nameerror
   gem "bigdecimal", "~> 1.4" # See: https://github.com/rails/rails/issues/34822
   gem "drb"
+  gem "mutex_m"
 end
 
 appraise "rails-7-1" do
