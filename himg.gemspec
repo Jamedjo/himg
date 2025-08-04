@@ -37,7 +37,6 @@ Gem::Specification.new do |spec|
   # spec.add_dependency "example-gem", "~> 1.0"
   spec.add_dependency "rb_sys", "~> 0.9"
 
-  spec.add_development_dependency "appraisal"
   spec.add_development_dependency "bump"
   spec.add_development_dependency "debug"
   spec.add_development_dependency "irb"
@@ -45,7 +44,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake-compiler"
   spec.add_development_dependency "rspec"
   spec.add_development_dependency "rubocop"
-  spec.add_development_dependency "steep"
 
   # For more information and examples about making a new gem, check out our
   # guide at: https://bundler.io/guides/creating_gem.html

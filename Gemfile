@@ -8,3 +8,6 @@ gemspec
 gem "puma"
 gem "rails"
 gem "stackprof"
+gem "appraisal"
+gem "steep"
+gem "stackprof"
