@@ -3,6 +3,7 @@
 - Adds missing thor dependency for CLI
 - CLI automatically sets base-url for http(s) resources
 - Added `--http-headers` CLI option for sending custom headers when fetching the initial SOURCE HTML.
+- CLI prints `himg help screenshot` USAGE example by default, including version and description.
 
 ## [0.0.10] - 2025-08-01
 

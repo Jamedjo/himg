@@ -5,6 +5,18 @@ require "uri"
 
 module Himg
   class CLI < Thor
+    default_command :usage
+
+    desc "usage", "Show usage for screenshot command", hide: true
+    def usage
+      puts "himg v#{VERSION}"
+      puts
+      puts "Converts HTML to PNG images using a lightweight, minimal renderer."
+      puts "Ideal for generating OpenGraph images from purpose-built HTML."
+      puts
+      CLI.command_help(Thor::Base.shell.new, 'screenshot')
+    end
+
     desc "screenshot SOURCE_HTML DESTINATION_PNG [OPTIONS]", "Render HTML to a png screenshot"
 
     option :width, type: :numeric, desc: "Sets the width of the rendered content.", default: 720
