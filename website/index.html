@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Himg - You give it HTML and it gives back an image!</title>
+    <meta name="description" content="Parses HTML/CSS, fetches nested resources, renders an image. No browser, no fuss. Perfect for OpenGraph previews.">
+
+    <!-- OpenGraph tags -->
+    <meta property="og:title" content="Himg - The Hyper Image Generator">
+    <meta property="og:description" content="HTML to image rendering for Ruby developers. No browser required. Rails ready.">
+    <meta property="og:image" content="https://github.com/Jamedjo/himg/raw/main/readme_hero.svg">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #FAFAFA;
+            color: #1a1a1a;
+            line-height: 1.6;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: white;
+            color: #1a1a1a;
+            padding: 30px 20px 20px;
+            text-align: center;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+            background: linear-gradient(90deg, #FF006E, #8338EC, #3A86FF, #06FFB4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tagline {
+            font-size: 18px;
+            font-weight: 400;
+            margin-bottom: 0;
+            color: #666;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 16px 32px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #FF006E, #8338EC);
+            color: white;
+            box-shadow: 0 4px 20px rgba(131, 56, 236, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(131, 56, 236, 0.4);
+        }
+
+        /* Code Examples */
+        .examples {
+            padding: 40px 20px 50px;
+            background: #F5F7FA;
+        }
+
+        .code-tabs {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: nowrap;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .tab.active {
+            border-color: #FF006E;
+            color: #FF006E;
+        }
+
+        .code-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .code-block {
+            background: #1a1a1a;
+            color: #fff;
+            padding: 30px;
+            border-radius: 16px;
+            overflow-x: auto;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            position: relative;
+        }
+
+        .code-block::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #FF006E, #8338EC, #3A86FF);
+        }
+
+        .code-content {
+            display: none;
+        }
+
+        .code-content.active {
+            display: block;
+        }
+
+        /* Why Section */
+        .why-section {
+            padding: 50px 20px;
+            background: #F5F7FA;
+            text-align: center;
+        }
+
+        .why-section h2 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: #1a1a1a;
+        }
+
+        .why-section p {
+            font-size: 18px;
+            color: #666;
+            max-width: 800px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
+        }
+
+        /* WhatsApp Mockup */
+        .whatsapp-comparison {
+            display: flex;
+            gap: 40px;
+            max-width: 900px;
+            margin: 0 auto 50px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @media (max-width: 768px) {
+            .whatsapp-comparison {
+                flex-direction: column;
+                gap: 30px;
+            }
+        }
+
+        .whatsapp-phone {
+            flex: 1;
+            max-width: 380px;
+        }
+
+        .phone-frame {
+            background: #E5DDD5;
+            border-radius: 30px;
+            padding: 60px 0 0;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+
+        .chat-header {
+            background: #128C7E;
+            color: white;
+            padding: 15px 20px;
+            margin-top: -60px;
+            border-radius: 30px 30px 0 0;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chat-body {
+            background: #E5DDD5;
+            padding: 20px;
+            min-height: 400px;
+        }
+
+        .message {
+            background: #E6FFDB;
+            padding: 10px 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            max-width: 80%;
+            margin-left: auto;
+            font-size: 14px;
+            color: #303030;
+            position: relative;
+        }
+
+        .message::after {
+            content: '';
+            position: absolute;
+            right: -8px;
+            top: 10px;
+            width: 0;
+            height: 0;
+            border-left: 8px solid #E6FFDB;
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+        }
+
+        .link-preview {
+            background: #DDF6D7;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .link-preview img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .link-preview-content {
+            padding: 8px 10px;
+            background: #DDF6D7;
+        }
+
+        .link-preview-title {
+            font-weight: 600;
+            margin-bottom: 3px;
+            color: #000;
+            font-size: 13px;
+            text-align: left;
+        }
+
+        .link-preview-desc {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 3px;
+            line-height: 1.3;
+            text-align: left;
+        }
+
+        .link-preview-url {
+            font-size: 11px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            text-align: left;
+        }
+
+        .plain-link {
+            color: #0066CC;
+            text-decoration: underline;
+        }
+
+        .comparison-label {
+            font-size: 18px;
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 20px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .comparison-label.bad {
+            color: #E74C3C;
+        }
+
+        .comparison-label.good {
+            color: #27AE60;
+        }
+
+        /* Stats */
+        .stats {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 48px;
+            font-weight: 800;
+            background: linear-gradient(90deg, #FF006E, #8338EC);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 16px;
+            color: #666;
+        }
+
+        .stat-label a {
+            color: #8338EC;
+            text-decoration: none;
+        }
+
+        .stat-label a:hover {
+            text-decoration: underline;
+        }
+
+        /* How-to section */
+        .how-to {
+            max-width: 800px;
+            margin: 50px auto 0;
+        }
+
+        .how-to h3 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #1a1a1a;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 50px 20px 60px;
+            background: white;
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 60px;
+            color: #1a1a1a;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 900px) {
+            .feature-grid {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+            }
+        }
+
+        .feature {
+            text-align: center;
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #FF006E, #8338EC);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+        }
+
+        .feature h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #1a1a1a;
+        }
+
+        .feature p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 60px 20px 70px;
+            text-align: center;
+            background: linear-gradient(135deg, #FFF5F5, #F0F4FF);
+        }
+
+        .cta-section h2 {
+            font-size: 42px;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, #FF006E, #8338EC, #3A86FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .cta-section p {
+            font-size: 20px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        /* Footer */
+        footer {
+            padding: 30px 20px;
+            text-align: center;
+            color: #666;
+            background: white;
+            border-top: 1px solid #E5E7EB;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 28px;
+            }
+
+            .tagline {
+                font-size: 16px;
+            }
+
+        }
+
+        /* Syntax Highlighting */
+        .keyword { color: #FF006E; }
+        .string { color: #06FFB4; }
+        .function { color: #8338EC; }
+        .comment { color: #666; }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="logo">
+                <img src="../logo.svg" alt="Himg" width="180" height="65">
+            </div>
+            <h1>You give it HTML and it gives back an image!</h1>
+            <p class="tagline">Fast, lightweight rendering - no browser, no fuss</p>
+            <p class="tagline">Stand out with dynamic image previews</p>
+        </div>
+    </section>
+
+    <!-- Code Examples -->
+    <section class="examples" id="examples">
+        <div class="container">
+            <div class="code-tabs">
+                <div class="tab active" data-tab="cli" onclick="showTab('cli')">CLI</div>
+                <div class="tab" data-tab="ruby" onclick="showTab('ruby')">Ruby</div>
+                <div class="tab" data-tab="rails" onclick="showTab('rails')">Rails</div>
+            </div>
+
+            <div class="code-container">
+                <div class="code-block">
+                    <div class="code-content active" id="cli">
+                        <span class="comment"># Install the gem</span><br>
+                        <span class="keyword">gem install</span> <span class="string">himg</span><br><br>
+
+                        <span class="comment"># Generate from a file</span><br>
+                        <span class="keyword">himg screenshot</span> <span class="string">path/to/your.html screenshot.png</span><br><br>
+
+                        <span class="comment"># Or from a URL</span><br>
+                        <span class="keyword">himg screenshot</span> <span class="string">https://himg.jamedjo.co.uk himg.png</span> --width=1024
+                    </div>
+
+                    <div class="code-content" id="ruby">
+                        <span class="keyword">require</span> <span class="string">'himg'</span><br><br>
+
+                        <span class="comment"># Generate an image from HTML</span><br>
+                        png = <span class="keyword">Himg</span>.<span class="function">render</span>(<span class="string">"&lt;h1&gt;Hello Image&lt;/h1&gt;"</span>)<br>
+                        <span class="keyword">File</span>.<span class="function">open</span>("output.png", "wb") { |f| f.write(png) }<br><br>
+
+                        <span class="comment"># With options</span><br>
+                        png = <span class="keyword">Himg</span>.<span class="function">render</span>(html, <span class="keyword">width:</span> 720, <span class="keyword">height:</span> 405)
+                    </div>
+
+                    <div class="code-content" id="rails">
+                        <span class="comment"># Create app/views/users/<strong style="color: #999;">show.himg.erb</strong></span><br>
+                        &lt;div&gt;&lt;%= @user.name %&gt;&lt;/div&gt;<br><br>
+
+                        <span class="comment"># Optional: Configure in your controller</span><br>
+                        <span class="function">himg_config</span>(<span class="keyword">width:</span> 720, <span class="keyword">height:</span> 405, <span class="keyword">disable_fetch:</span> <span class="keyword">false</span>)<br><br>
+
+                        <span class="comment"># That's it! Access at users/123.png</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cta-buttons" style="margin-top: 30px;">
+                <a href="https://github.com/Jamedjo/himg" class="btn btn-primary">View on GitHub</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <div class="feature-grid">
+                <div class="feature">
+                    <div class="feature-icon">⚡</div>
+                    <h3>No Browser Required</h3>
+                    <p>Pure HTML/CSS parsing with Rust. No 2GB Chrome process, no Bluetooth APIs, no MIDI keyboards.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🏗️</div>
+                    <h3>Zero Infrastructure</h3>
+                    <p>No background jobs, no Redis queues, no external services. Storage and caching optional.</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">💎</div>
+                    <h3>Rails Ready</h3>
+                    <p>Drop in a `.himg.erb` template and you're done. Use template variables to create dynamic images for each user, post, or product.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Section -->
+    <section class="why-section">
+        <div class="container">
+            <h2 style="background: linear-gradient(90deg, #FF006E, #8338EC, #3A86FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Turn boring links into rich visual previews</h2>
+
+            <div class="whatsapp-comparison">
+                <div class="whatsapp-phone">
+                    <div class="comparison-label bad">❌ Without OpenGraph</div>
+                    <div class="phone-frame">
+                        <div class="chat-header">
+                            <span>💬</span> Potential customer
+                        </div>
+                        <div class="chat-body">
+                            <div class="message">
+                                <span class="plain-link" style="display: block; text-align: left;">https://store.example.com/products/awesome-widget-2024</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="whatsapp-phone">
+                    <div class="comparison-label good">✅ With OpenGraph (using himg)</div>
+                    <div class="phone-frame">
+                        <div class="chat-header">
+                            <span>💬</span> Potential customer
+                        </div>
+                        <div class="chat-body">
+                            <div class="message">
+                                <div class="link-preview">
+                                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 630'%3E%3Cdefs%3E%3ClinearGradient id='purple' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%238338EC'/%3E%3Cstop offset='100%25' style='stop-color:%23FF006E'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1200' height='630' fill='%23f8f8f8'/%3E%3Crect x='0' y='0' width='600' height='630' fill='url(%23purple)'/%3E%3Ctext x='350' y='350' font-family='Arial' font-size='400' text-anchor='middle' dominant-baseline='middle'%3E%F0%9F%8E%81%3C/text%3E%3Ctext x='620' y='150' font-family='Arial' font-size='56' font-weight='bold' fill='%23333'%3EAwesome Widget%3C/text%3E%3Ctext x='620' y='180' font-family='Arial' font-size='24' fill='%23FFD700'%3E%E2%AD%90%E2%AD%90%E2%AD%90%E2%AD%90%E2%AD%90%3C/text%3E%3Ctext x='620' y='235' font-family='Arial' font-size='28' fill='%23666'%3EThe widget that changes everything%3C/text%3E%3Cg%3E%3Crect x='620' y='280' width='100' height='100' rx='12' fill='url(%23purple)'/%3E%3Crect x='620' y='280' width='100' height='100' rx='12' fill='%2306FFB4' opacity='0.5'/%3E%3Ctext x='670' y='333' font-family='Arial' font-size='54' text-anchor='middle' dominant-baseline='middle'%3E%F0%9F%9A%80%3C/text%3E%3C/g%3E%3Cg%3E%3Crect x='735' y='280' width='100' height='100' rx='12' fill='url(%23purple)'/%3E%3Crect x='735' y='280' width='100' height='100' rx='12' fill='%233A86FF' opacity='0.5'/%3E%3Ctext x='785' y='333' font-family='Arial' font-size='54' text-anchor='middle' dominant-baseline='middle'%3E%E2%9A%A1%3C/text%3E%3C/g%3E%3Cg%3E%3Crect x='850' y='280' width='100' height='100' rx='12' fill='url(%23purple)'/%3E%3Crect x='850' y='280' width='100' height='100' rx='12' fill='%23FF006E' opacity='0.5'/%3E%3Ctext x='900' y='333' font-family='Arial' font-size='54' text-anchor='middle' dominant-baseline='middle'%3E%F0%9F%8E%81%3C/text%3E%3C/g%3E%3Ctext x='620' y='470' font-family='Arial' font-size='72' font-weight='bold' fill='%23FF006E'%3E%C2%A37.99%3C/text%3E%3Ctext x='620' y='500' font-family='Arial' font-size='32' fill='%23999' text-decoration='line-through'%3E%C2%A311.99%3C/text%3E%3Crect x='880' y='530' width='200' height='80' rx='40' fill='%23FF006E'/%3E%3Ctext x='980' y='582' font-family='Arial' font-size='36' font-weight='bold' fill='white' text-anchor='middle'%3E30%25 OFF%3C/text%3E%3C/svg%3E" alt="Product preview">
+                                    <div class="link-preview-content">
+                                        <div class="link-preview-title">Awesome Widget Pro - Save 30% Today</div>
+                                        <div class="link-preview-desc">Premium 5-star widget with free shipping. Limited time offer!</div>
+                                        <div class="link-preview-url">store.example.com</div>
+                                    </div>
+                                </div>
+                                <span style="font-size: 12px; color: #0066CC; text-decoration: underline; display: block; text-align: left;">https://store.example.com/products/awesome-widget-2024</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p style="margin: 40px auto; max-width: 800px; font-size: 18px; color: #666; line-height: 1.6;">Every time someone shares your link, you have one chance to <strong>make an impression</strong>.</p>
+
+            <p style="margin: 20px auto 40px; max-width: 800px; font-size: 18px; color: #666; line-height: 1.6;">Create dynamic previews tailored to each page. Show actual prices, user profiles, product images - whatever makes your content compelling. Not just another generic placeholder.</p>
+
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-number">2.3x</div>
+                    <div class="stat-label">more engagement<br><a href="https://www.buzzsumo.com/blog/how-to-massively-boost-your-blog-traffic-with-these-5-awesome-image-stats/" target="_blank" rel="noopener">on Facebook</a></div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">4x</div>
+                    <div class="stat-label">more shares<br><a href="https://www.buzzsumo.com/blog/how-to-massively-boost-your-blog-traffic-with-these-5-awesome-image-stats/" target="_blank" rel="noopener">on Twitter</a></div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">8x</div>
+                    <div class="stat-label">more clicks<br><a href="https://simpletexting.com/blog/sms-link-previews/" target="_blank" rel="noopener">on SMS</a></div>
+                </div>
+            </div>
+
+            <div class="how-to">
+                <h3>Add rich previews in 2 simple steps</h3>
+                <div class="code-container">
+                    <div class="code-block" style="text-align: left;">
+                        <span class="comment"># Step 1: Create app/views/users/<strong style="color: #999;">show.himg.erb</strong></span><br>
+                        &lt;div&gt;&lt;%= <span class="function">@user</span>.<span class="keyword">name</span> %&gt;&lt;/div&gt;<br><br>
+
+                        <span class="comment"># Step 2: Add OpenGraph meta tags to your HTML</span><br>
+                        &lt;meta property=<span class="string">"og:title"</span> content="&lt;%= <span class="function">@user</span>.<span class="keyword">username</span> %&gt;" /&gt;<br>
+                        &lt;meta property=<span class="string">"og:description"</span> content="&lt;%= <span class="function">@user</span>.<span class="keyword">tagline</span> %&gt;" /&gt;<br>
+                        &lt;meta property=<span class="string">"og:image"</span> content="&lt;%= <span class="keyword">user_url</span>(<span class="function">@user</span>.<span class="keyword">username</span>, <span class="function">format: :png</span>) %&gt;" /&gt;
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>Ready to Generate Images from HTML?</h2>
+            <p>Check out the full documentation and contribute on GitHub</p>
+            <div class="cta-buttons">
+                <a href="https://github.com/Jamedjo/himg" class="btn btn-primary">Get Started on GitHub</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>Himg - The Hyper Image Generator<br>
+            Built with ❤️ by <a href="https://portfolio.jamedjo.co.uk" style="color: #8338EC; text-decoration: none;">@Jamedjo</a></p>
+        </div>
+    </footer>
+
+    <script>
+        function showTab(tabName, updateHistory = true) {
+            // Hide all tabs and content
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.code-content').forEach(content => content.classList.remove('active'));
+
+            // Show selected tab and content
+            const tab = document.querySelector(`.tab[data-tab="${tabName}"]`);
+            if (tab) {
+                tab.classList.add('active');
+                document.getElementById(tabName).classList.add('active');
+
+                // Update URL hash
+                if (updateHistory) {
+                    history.pushState(null, null, '#' + tabName);
+                }
+            }
+        }
+
+        // Handle direct links on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            const hash = window.location.hash.substring(1);
+            if (hash && ['cli', 'ruby', 'rails'].includes(hash)) {
+                showTab(hash, false);
+            }
+        });
+
+        // Handle browser back/forward
+        window.addEventListener('popstate', function() {
+            const hash = window.location.hash.substring(1);
+            if (hash && ['cli', 'ruby', 'rails'].includes(hash)) {
+                showTab(hash, false);
+            } else {
+                showTab('cli', false);
+            }
+        });
+    </script>
+</body>
+</html>
