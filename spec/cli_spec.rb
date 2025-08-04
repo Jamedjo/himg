@@ -102,6 +102,36 @@ RSpec.describe Himg::CLI do
 
         cli.invoke(:screenshot, [source_path, destination_path])
       end
+
+      it "sends base_url to Himg renerer" do
+        expect(Himg).to receive(:render).with(anything, hash_including(base_url: "file:///path/to/project/folder"))
+
+        cli.invoke(:screenshot, [source_path, destination_path], base_url: "file:///path/to/project/folder")
+      end
+
+      it "defaults base_url for http(s) so relative URLs can work" do
+        expect(Himg).to receive(:render).with(anything, hash_including(base_url: "https://github.com/Jamedjo/"))
+
+        source_path = "https://github.com/Jamedjo/himg#Setup?utm_source=frankie.cool"
+
+        cli.invoke(:screenshot, [source_path, destination_path])
+      end
+
+      it "does not overwrite base_url for http(s) URLs" do
+        expect(Himg).to receive(:render).with(anything, hash_including(base_url: "https://another.url"))
+
+        source_path = "https://github.com/Jamedjo/himg"
+
+        cli.invoke(:screenshot, [source_path, destination_path], base_url: "https://another.url")
+      end
+
+      it "keeps directory URLs unchanged when setting base_url" do
+        expect(Himg).to receive(:render).with(anything, hash_including(base_url: "https://github.com/Jamedjo/himg/"))
+
+        source_path = "https://github.com/Jamedjo/himg/"
+
+        cli.invoke(:screenshot, [source_path, destination_path])
+      end
     end
   end
 end

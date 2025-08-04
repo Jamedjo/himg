@@ -1,6 +1,7 @@
 require "thor"
 require "himg"
 require "open-uri"
+require "uri"
 
 module Himg
   class CLI < Thor
@@ -28,13 +29,20 @@ module Himg
     LONGDESC
     def screenshot(url, destination)
       Document.new(url, options).load do |content|
-        png = Himg.render(content, **options.transform_keys(&:to_sym))
+        render_options = options.transform_keys(&:to_sym)
+        render_options[:base_url] ||= base_directory_url(url) if Document.http_url?(url)
+
+        png = Himg.render(content, **render_options)
 
         File.open(destination, "wb") { |f| f.write(png) }
       end
     end
 
     private
+
+    def base_directory_url(url)
+      URI.join(url, ".").to_s
+    end
 
     def self.exit_on_failure?
       true
@@ -46,12 +54,12 @@ module Himg
         @options = options
       end
 
-      def http_url?
-        @source =~ %r{\Ahttps?\://}
+      def self.http_url?(url)
+        url =~ %r{\Ahttps?\://}
       end
 
       def load(&block)
-        if http_url?
+        if self.class.http_url?(@source)
           URI.send(:open, @source) do |input|
             yield(input.binmode.read)
           end
