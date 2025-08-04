@@ -15,7 +15,7 @@ Perfect for OpenGraph images - stop losing clicks to boring links by adding a ri
 ```bash
 gem install himg
 himg screenshot path/to/your.html screenshot.png
-himg screenshot https://github.com/Jamedjo/himg himg.png --width=1024 --verbose --no-truncate
+himg screenshot https://himg.jamedjo.co.uk himg.png --width=1024 --verbose --no-truncate
 ```
 
 ### Ruby
