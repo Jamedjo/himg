@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="logo.svg" alt="Himg" width="200">
+</div>
+
 # Himg: The Hyper Image Generator
 
 You give it HTML and it gives back an image!
@@ -47,6 +51,8 @@ OpenGraph tags let messenger apps and social media sites know to use your genera
 <meta property="og:description" content="<%= @user.tagline %>" />
 <meta property="og:image" content="<%= user_url(@user.username, format: :png) %>" />
 ```
+
+![WhatsApp preview comparison showing plain link vs rich OpenGraph preview](/readme_opengraph_comparison.png)
 
 # Usage
 
