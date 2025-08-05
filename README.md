@@ -212,7 +212,6 @@ To play nicely with Rails a template handler is registered, which Rails' `defaul
 2. Performance needs tuning. Both in the underlying blitz library and how data is passed between Rust and Ruby
 3. Network requests can be made: don't use this library with untrusted inputs. Use `disable_fetch` if you don't need to fetch any resources.
 4. file:// URLs are resolved: this could expose files on your computer. Use `disable_fetch` if you don't need to fetch any resources.
-5. Native extensions are not yet being published for different os/arch
 
 # Development
 
