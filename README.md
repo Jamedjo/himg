@@ -140,7 +140,7 @@ Himg supports a large subset of the HTML and CSS you'd need to get by, but not a
 
 For a full list, see our [snapshot of the blitz.is status page](https://github.com/Jamedjo/himg/issues/2).
 
-If something you'd like supported is missing and is available [upstream on blitz](https://blitz.is/status), please [open an issue](https://github.com/Jamedjo/himg/issues/new).
+If something you'd like supported is missing and is available [upstream on Blitz](https://blitz.is/status), please [open an issue](https://github.com/Jamedjo/himg/issues/new).
 
 |HTML|Status|
 |-|-|
@@ -204,7 +204,7 @@ If something you'd like supported is missing and is available [upstream on blitz
 
 No browser, just basics!
 
-Himg calls through to the amazing blitz library, which uses Stylo to parse the CSS, servo/html5ever to parse the HTML, fetches network resources, builds a scene graph and hands over to vello to render an image.
+Himg calls through to the amazing [blitz](https://github.com/DioxusLabs/blitz) library, which uses [Stylo](https://github.com/servo/stylo) to parse the CSS, [servo/html5ever](https://github.com/servo/html5ever) to parse the HTML, fetches network resources, builds a scene graph and hands over to [vello](https://github.com/linebender/vello) to render an image.
 
 Interaction between Ruby & Rust is done with the help of `magnus`, `rb_sys` and lots of glue code from the `oxidize-rb` team.
 
@@ -213,7 +213,7 @@ To play nicely with Rails a template handler is registered, which Rails' `defaul
 ## CAVEATS
 
 1. This is **pre-alpha** software, don't expect it to work perfectly yet.
-2. Performance needs tuning. Both in the underlying blitz library and how data is passed between Rust and Ruby
+2. Performance needs tuning. Both in the underlying [Blitz](https://github.com/DioxusLabs/blitz) library and how data is passed between Rust and Ruby
 3. Network requests can be made: don't use this library with untrusted inputs. Use `disable_fetch` if you don't need to fetch any resources.
 4. file:// URLs are resolved: this could expose files on your computer. Use `disable_fetch` if you don't need to fetch any resources.
 
