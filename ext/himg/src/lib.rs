@@ -12,10 +12,14 @@ pub use options::Options;
 pub use html_to_image::html_to_image;
 pub use writer::write_png;
 
+const BULLET_FONT: &[u8] = include_bytes!("../assets/moz-bullet-font.otf");
+
 use std::cell::RefCell;
+use std::sync::Arc;
 use magnus::{class, function, method, prelude::*, wrap, ExceptionClass, Error, Ruby, RString, RHash};
 use tokio::runtime::Runtime;
 use blitz_dom::FontContext;
+use peniko::Blob;
 
 impl Options {
     pub fn from_ruby(hash: Option<RHash>) -> Result<Self, Error> {
@@ -53,7 +57,9 @@ pub struct Renderer {
 
 impl Renderer {
     pub fn new() -> Result<Self, Error> {
-        let font_ctx = FontContext::default();
+        let mut font_ctx = FontContext::default();
+        font_ctx.collection.register_fonts(Blob::new(Arc::new(BULLET_FONT) as _), None);
+
         let tokio_runtime = Runtime::new()
             .map_err(|e| Error::new(magnus::exception::runtime_error(), e.to_string()))?;
 

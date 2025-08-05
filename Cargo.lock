@@ -1106,6 +1106,7 @@ dependencies = [
  "blitz-traits",
  "magnus",
  "openssl",
+ "peniko",
  "png",
  "rb-sys",
  "rb-sys-env 0.2.2",
