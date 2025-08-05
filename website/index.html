@@ -183,13 +183,6 @@
             justify-content: center;
         }
 
-        @media (max-width: 768px) {
-            .whatsapp-comparison {
-                flex-direction: column;
-                gap: 30px;
-            }
-        }
-
         .whatsapp-phone {
             flex: 1;
             max-width: 380px;
@@ -297,6 +290,28 @@
             text-decoration: underline;
             word-break: break-all;
             overflow-wrap: break-word;
+        }
+
+        @media (max-width: 840px) {
+            .whatsapp-comparison {
+              margin: 0px -20px;
+              gap: 0px 20px;
+            }
+
+            .whatsapp-phone .message {
+              max-width: 95%;
+            }
+        }
+
+        @media (max-width: 680px) {
+            .whatsapp-comparison {
+                flex-direction: column;
+                gap: 40px;
+            }
+
+            .whatsapp-phone .chat-body {
+              min-height: initial;
+            }
         }
 
         .comparison-label {
