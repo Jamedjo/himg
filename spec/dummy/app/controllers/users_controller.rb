@@ -1,5 +1,5 @@
 class UsersController < ActionController::Base
-  himg_config(verbose: true)
+  himg_config(verbose: true, base_url: Rails.root.join("public"))
 
   def show
     himg_config(width: params[:w]) if params[:w]
