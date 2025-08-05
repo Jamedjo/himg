@@ -15,15 +15,19 @@ fi
 
 PERF_DATA=$(mktemp /tmp/himg-perf.XXXXXX.data)
 RUBY_SCRIPT=$(mktemp /tmp/himg-profile.XXXXXX.rb)
+RUBY_COMMAND=$(bundle exec which ruby)
 
 cat > "$RUBY_SCRIPT" << EOF
 require 'himg'
 
 html = File.read('$HTML_FILE')
-Himg.render(html)
+
+10.times do
+  Himg.render(html, disable_fetch: true)
+end
 EOF
 
-perf record -g --call-graph=dwarf -o "$PERF_DATA" ruby -I lib "$RUBY_SCRIPT"
+LOAD_PATH='lib' perf record -g --call-graph=dwarf -o "$PERF_DATA" $RUBY_COMMAND "$RUBY_SCRIPT"
 
 rm -f "$RUBY_SCRIPT"
 

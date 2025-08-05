@@ -225,6 +225,7 @@ To play nicely with Rails a template handler is registered, which Rails' `defaul
   - http://localhost:3000/users/jamedjo will render an HTML page with opengraph meta tags
 6. To install this gem onto your local machine, run `bundle exec rake install`.
 7. To simulate a headless server environment without a GPU, use `WGPU_BACKEND=empty bundle exec rspec`
+8. To profile performance with flamegraphs, run `bin/profile spec/fixtures/profile_test.html`
 
 ### Run cargo example directly generate image in Rust
 
