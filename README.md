@@ -1,14 +1,15 @@
 <div align="center">
   <img src="logo.svg" alt="Himg" width="200">
+  <div>
+    <img src="tagline.svg" alt="The Hyper Image Generator" width="600">
+  </div>
+
+  <p>You give it HTML and it gives back an image!</p>
+
+  <p>Parses HTML/CSS, fetches nested resources, renders an image. No browser, no fuss.</p>
+
+  <p>Perfect for OpenGraph images - stop losing clicks to boring links by adding a rich image preview that showcases your content.</p>
 </div>
-
-# Himg: The Hyper Image Generator
-
-You give it HTML and it gives back an image!
-
-Parses HTML/CSS, fetches nested resources, renders an image. No browser, no fuss.
-
-Perfect for OpenGraph images - stop losing clicks to boring links by adding a rich image preview that showcases your content.
 
 ![Mockup showing HTML being transformed into a WhatsApp preview](/readme_hero.svg)
 
