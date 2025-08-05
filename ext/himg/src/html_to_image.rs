@@ -1,5 +1,5 @@
 use blitz_html::HtmlDocument;
-use blitz_dom::DocumentConfig;
+use blitz_dom::{DocumentConfig, FontContext};
 use anyrender_vello::VelloImageRenderer;
 use anyrender_vello_cpu::VelloCpuImageRenderer;
 use anyrender::render_to_buffer;
@@ -21,6 +21,7 @@ pub async fn html_to_image(
     html: &str,
     options: Options,
     logger: &mut dyn Logger,
+    font_ctx: Option<FontContext>,
 ) -> RenderOutput {
     let mut net_fetcher = if options.disable_fetch {
         logger.log("Disabled fetching resources");
@@ -39,6 +40,7 @@ pub async fn html_to_image(
         DocumentConfig {
             base_url: options.base_url,
             net_provider: net_fetcher.as_ref().map(|fetcher| fetcher.get_provider() as _),
+            font_ctx,
             ..Default::default()
         },
     );

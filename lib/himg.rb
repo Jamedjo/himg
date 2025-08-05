@@ -22,6 +22,7 @@ module Himg
   class GpuNotFound < Error; end
 
   def self.render(html, width: 720, height: 405, truncate: true, verbose: false, base_url: nil, disable_fetch: false, fetch_timeout: 10, gpu: false)
-    render_to_string(html, "width" => width.to_i, "height" => height.to_i, "truncate" => truncate, "verbose" => verbose, "base_url" => BaseUrl.new(base_url).to_s, "disable_fetch" => disable_fetch, "fetch_timeout" => fetch_timeout.to_f, "gpu" => gpu)
+    @default_renderer ||= Renderer.new
+    @default_renderer.render(html, "width" => width.to_i, "height" => height.to_i, "truncate" => truncate, "verbose" => verbose, "base_url" => BaseUrl.new(base_url).to_s, "disable_fetch" => disable_fetch, "fetch_timeout" => fetch_timeout.to_f, "gpu" => gpu)
   end
 end

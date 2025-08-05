@@ -2,15 +2,10 @@ use crate::html_to_image::html_to_image;
 use crate::options::Options;
 use crate::writer::write_png;
 use crate::logger::{Logger, NullLogger, TimedLogger};
-
-pub fn render_blocking(html: String, options: Options) -> Result<Vec<u8>, std::io::Error> {
-    let runtime = tokio::runtime::Runtime::new()?;
-
-    runtime.block_on(render(html, options))
-}
+use blitz_dom::FontContext;
 
 // render_to_bytes, render_to_string, render_to_file, render_to_io
-pub async fn render(html: String, options: Options) -> Result<Vec<u8>, std::io::Error> {
+pub async fn render(html: String, options: Options, font_ctx: Option<FontContext>) -> Result<Vec<u8>, std::io::Error> {
     let mut logger: Box<dyn Logger> = if options.verbose {
         Box::new(TimedLogger::init())
     } else {
@@ -18,7 +13,7 @@ pub async fn render(html: String, options: Options) -> Result<Vec<u8>, std::io::
     };
 
     // Render to Image
-    let render_output = html_to_image(&html, options, &mut *logger).await;
+    let render_output = html_to_image(&html, options, &mut *logger, font_ctx).await;
 
     // Determine output path, and open a file at that path.
     let mut output_buffer: Vec<u8> = Vec::new();

@@ -184,8 +184,14 @@ RSpec.describe Himg do
     end
   end
 
-  it "handles invalid parameters at the Rust boundary" do
-    expect { Himg.render_to_string(123, {}) }.to raise_error(TypeError)
+  it "reuses the same renderer instance for Himg.render calls" do
+    Himg.instance_variable_set(:@default_renderer, nil)
+    Himg.render("<h1>Test</h1>")
+    renderer = Himg.instance_variable_get(:@default_renderer)
+
+    expect(renderer).to receive(:render).with("<h1>Test 2</h1>", instance_of(Hash))
+
+    Himg.render("<h1>Test 2</h1>")
   end
 
   it "renders blue background color correctly", :aggregate_failures do

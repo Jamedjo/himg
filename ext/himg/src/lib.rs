@@ -6,13 +6,16 @@ pub mod writer;
 pub mod logger;
 pub mod net_fetcher;
 
-pub use renderer::render_blocking;
+pub use renderer::render;
 pub use image_size::ImageSize;
 pub use options::Options;
 pub use html_to_image::html_to_image;
 pub use writer::write_png;
 
-use magnus::{function, prelude::*, ExceptionClass, Error, Ruby, RString, RHash};
+use std::cell::RefCell;
+use magnus::{class, function, method, prelude::*, wrap, ExceptionClass, Error, Ruby, RString, RHash};
+use tokio::runtime::Runtime;
+use blitz_dom::FontContext;
 
 impl Options {
     pub fn from_ruby(hash: Option<RHash>) -> Result<Self, Error> {
@@ -42,13 +45,38 @@ impl Options {
     }
 }
 
-pub fn render_blocking_rb(ruby: &Ruby, html: String, options: Option<RHash>) -> Result<RString, Error> {
-    let options = Options::from_ruby(options)?;
+#[wrap(class = "Himg::Renderer")]
+pub struct Renderer {
+    tokio_runtime: RefCell<Runtime>,
+    font_ctx: RefCell<FontContext>,
+}
+
+impl Renderer {
+    pub fn new() -> Result<Self, Error> {
+        let font_ctx = FontContext::default();
+        let tokio_runtime = Runtime::new()
+            .map_err(|e| Error::new(magnus::exception::runtime_error(), e.to_string()))?;
+
+        Ok(Renderer {
+            tokio_runtime: RefCell::new(tokio_runtime),
+            font_ctx: RefCell::new(font_ctx),
+        })
+    }
+
+pub fn render(&self, html: String, options: Option<RHash>) -> Result<RString, Error> {
+    let ruby = Ruby::get().unwrap();
     let exception_class = ExceptionClass::from_value(magnus::eval("Himg::Error").unwrap()).unwrap();
     let gpu_not_found_class = ExceptionClass::from_value(magnus::eval("Himg::GpuNotFound").unwrap()).unwrap();
 
+    let options = Options::from_ruby(options)?;
+
+    let font_ctx_clone = self.font_ctx.borrow().clone();
+    let tokio_runtime = self.tokio_runtime.borrow();
+
     let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
-        render_blocking(html, options)
+        tokio_runtime.block_on(
+            render(html, options, Some(font_ctx_clone))
+        )
     }));
 
     match result {
@@ -70,13 +98,16 @@ pub fn render_blocking_rb(ruby: &Ruby, html: String, options: Option<RHash>) -> 
             }
         }
     }
+    }
 }
 
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let module = ruby.define_module("Himg")?;
 
-    module.define_singleton_method("render_to_string", function!(render_blocking_rb, 2))?;
+    let renderer_class = module.define_class("Renderer", class::object())?;
+    renderer_class.define_singleton_method("new", function!(Renderer::new, 0))?;
+    renderer_class.define_method("render", method!(Renderer::render, 2))?;
 
     Ok(())
 }

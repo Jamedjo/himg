@@ -1,5 +1,6 @@
 ## [Unreleased]
 
+- Himg::Renderer re-used between render calls. Allows us to cache font library loading and the multi-threading runtime.
 
 ## [0.0.11] - 2025-08-05
 
