@@ -1094,7 +1094,7 @@ checksum = "dfa686283ad6dd069f105e5ab091b04c62850d3e4cf5d67debad1933f55023df"
 
 [[package]]
 name = "himg"
-version = "0.0.10"
+version = "0.0.11"
 dependencies = [
  "anyrender",
  "anyrender_vello",
