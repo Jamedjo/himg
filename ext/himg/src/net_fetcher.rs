@@ -77,8 +77,6 @@ impl<D: Send + Sync + 'static> NetProvider<D> for ErrorHandlingProvider<D> {
         let pending_counter = self.pending_requests.clone();
 
         self.inner.fetch_with_callback(request, Box::new(move |fetch_result| {
-            pending_counter.decrement();
-
             match fetch_result {
                 Ok((_url, bytes)) => {
                     println!("Fetched {}", request_url);
@@ -89,6 +87,8 @@ impl<D: Send + Sync + 'static> NetProvider<D> for ErrorHandlingProvider<D> {
                     callback.call(doc_id, Err(error_msg));
                 }
             }
+
+            pending_counter.decrement();
         }));
     }
 }
