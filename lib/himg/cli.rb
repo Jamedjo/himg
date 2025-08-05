@@ -5,6 +5,8 @@ require "uri"
 
 module Himg
   class CLI < Thor
+    CLI_ONLY_OPTIONS = [:stdin, :http_headers].freeze
+
     default_command :usage
 
     desc "usage", "Show usage for screenshot command", hide: true
@@ -17,7 +19,7 @@ module Himg
       CLI.command_help(Thor::Base.shell.new, 'screenshot')
     end
 
-    desc "screenshot SOURCE_HTML DESTINATION_PNG [OPTIONS]", "Render HTML to a png screenshot"
+    desc "screenshot [SOURCE_HTML] DESTINATION_PNG [OPTIONS]", "Render HTML to a png screenshot"
 
     option :width, type: :numeric, desc: "Sets the width of the rendered content.", default: 720
     option :height, type: :numeric, desc: "Sets the desired height of the rendered output.", default: 405
@@ -28,22 +30,34 @@ module Himg
     option :gpu, type: :boolean, desc: "Use GPU renderer instead of CPU renderer", default: false
     option :http_headers, type: :hash, desc: "HTTP headers sent when fetching the SOURCE_HTML (e.g. --http-headers \"Authorization: Bearer token\" \"Content-Type: application/json\")"
     option :base_url, desc: "Base URL used to resolve relative URLs"
+    option :stdin, type: :boolean, desc: "Read HTML content from stdin instead of a file", default: false
 
     long_desc <<-LONGDESC
       `himg screenshot` takes a path to an HTML file and will render a png image with the output.
 
-      It takes a SOURCE, which can be a file path or a URL to fetch.
+      It takes a SOURCE, which can be a file path, a URL to fetch, or piped from stdin.
+
+      If SOURCE_HTML is omitted, HTML content will be read from stdin.
+      You can also use the --stdin option to explicitly read from stdin.
 
       The DESTINATION_PNG must be a local file path.
+
+      Examples:
+        himg screenshot input.html output.png
+        himg screenshot https://himg.jamedjo.co.uk output.png
+        echo '<h1>Hello</h1>' | himg screenshot --stdin output.png
 
       CAVEATS: This uses a lightweight HTML parser instead of a full browser, so does not support all features.
       Additionally it does not use a JavaScript engine, so will screenshot the page as-is and would not work for all webpages.
     LONGDESC
-    def screenshot(url, destination)
+    def screenshot(first_arg = nil, second_arg = nil)
+      url, destination = parse_screenshot_args(first_arg, second_arg)
+
       options[:http_headers]&.transform_values!(&:strip)
 
       Document.new(url, options).load do |content|
         render_options = options.transform_keys(&:to_sym)
+          .reject { |k, _| CLI_ONLY_OPTIONS.include?(k) }
         render_options[:base_url] ||= base_directory_url(url) if Document.http_url?(url)
 
         png = Himg.render(content, **render_options)
@@ -53,6 +67,24 @@ module Himg
     end
 
     private
+
+    def parse_screenshot_args(first_arg, second_arg)
+      raise Thor::RequiredArgumentMissingError unless first_arg
+
+      case
+      when options[:stdin]
+        raise Thor::RequiredArgumentMissingError if second_arg
+        [nil, first_arg]
+      when second_arg
+        [first_arg, second_arg]
+      else
+        raise Thor::RequiredArgumentMissingError if $stdin.tty?
+        [nil, first_arg]
+      end
+    rescue Thor::RequiredArgumentMissingError
+      CLI.command_help(Thor::Base.shell.new, 'screenshot')
+      raise
+    end
 
     def base_directory_url(url)
       URI.join(url, ".").to_s
@@ -70,11 +102,17 @@ module Himg
       end
 
       def self.http_url?(url)
-        url =~ %r{\Ahttps?\://}
+        url.to_s =~ %r{\Ahttps?\://}
+      end
+
+      def stdin?
+        @source.nil?
       end
 
       def load(&block)
-        if self.class.http_url?(@source)
+        if stdin?
+          yield($stdin.read)
+        elsif self.class.http_url?(@source)
           args = [@source]
           args << @http_headers if @http_headers
 

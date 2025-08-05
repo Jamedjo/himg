@@ -36,6 +36,14 @@ RSpec.describe Himg::CLI do
       end
     end
 
+    it "shows usage when no arguments provided" do
+      expect(Himg::CLI).to receive(:command_help).with(anything, 'screenshot')
+
+      expect do
+        cli.invoke(:screenshot, [])
+      end.to raise_error(Thor::RequiredArgumentMissingError)
+    end
+
     it "renders an image" do
       expect(Himg).to receive(:render).with(anything, anything)
 
@@ -133,14 +141,24 @@ RSpec.describe Himg::CLI do
         cli.invoke(:screenshot, [source_path, destination_path])
       end
 
-      it "passes http_headers to Himg renderer" do
-        expect(Himg).to receive(:render).with(anything, hash_including(http_headers: {"Authorization" => "Bearer token"}))
+      it "does not leak http_headers to Himg renderer" do
+        expect(Himg).to receive(:render).with(anything, hash_not_including(:http_headers))
 
         cli.invoke(:screenshot, [source_path, destination_path], http_headers: {"Authorization" => "Bearer token"})
       end
 
-      it "strips whitespace from header values" do
-        expect(Himg).to receive(:render).with(anything, hash_including(http_headers: {"Authorization" => "Bearer token"}))
+      it "fetches the initial page using http_headers" do
+        source_path = "https://frankie.cool"
+
+        expect(URI).to receive(:open).with(source_path, {"Authorization" => "Bearer token"})
+
+        cli.invoke(:screenshot, [source_path, destination_path], http_headers: {"Authorization" => "Bearer token"})
+      end
+
+      it "strips whitespace from header values when fetching" do
+        source_path = "https://frankie.cool"
+
+        expect(URI).to receive(:open).with(source_path, {"Authorization" => "Bearer token"})
 
         cli.invoke(:screenshot, [source_path, destination_path], http_headers: {"Authorization" => " Bearer token "})
       end
@@ -160,6 +178,50 @@ RSpec.describe Himg::CLI do
         expect(URI).to receive(:open).with(source_path)
 
         cli.invoke(:screenshot, [source_path, destination_path])
+      end
+    end
+
+    context "using stdin" do
+      let(:html_content) { "<h1>Hello from stdin</h1>" }
+
+      before do
+        allow($stdin).to receive(:tty?).and_return(false)
+        allow($stdin).to receive(:read).and_return(html_content)
+      end
+
+      it "reads HTML from stdin when using --stdin flag" do
+        expect(Himg).to receive(:render).with(html_content, anything)
+
+        cli.invoke(:screenshot, [destination_path], stdin: true)
+      end
+
+      it "reads HTML from stdin when only destination is provided" do
+        expect(Himg).to receive(:render).with(html_content, anything)
+
+        cli.invoke(:screenshot, [destination_path])
+      end
+
+      it "raises an error when a source has been provided as a destination" do
+        expect do
+          cli.invoke(:screenshot, [source_path, destination_path], stdin: true)
+        end.to raise_error(Thor::RequiredArgumentMissingError)
+      end
+
+      it "raises an error when using tty input without --stdin" do
+        allow($stdin).to receive(:tty?).and_return(true)
+
+        expect do
+          cli.invoke(:screenshot, [destination_path])
+        end.to raise_error(Thor::RequiredArgumentMissingError)
+      end
+
+      it "accepts --stdin flag even when stdin is a tty" do
+        allow($stdin).to receive(:tty?).and_return(true)
+        allow($stdin).to receive(:read).and_return(html_content)
+
+        expect(Himg).to receive(:render).with(html_content, anything)
+
+        cli.invoke(:screenshot, [destination_path], stdin: true)
       end
     end
   end

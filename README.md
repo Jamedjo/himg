@@ -18,8 +18,10 @@ Perfect for OpenGraph images - stop losing clicks to boring links by adding a ri
 
 ```bash
 gem install himg
+
 himg screenshot path/to/your.html screenshot.png
 himg screenshot https://himg.jamedjo.co.uk himg.png --width=1024 --verbose --no-truncate
+echo '<h1>Hello Image</h1>' | himg screenshot --stdin output.png
 ```
 
 ### Ruby
@@ -75,6 +77,7 @@ bundle add himg
 |fetch_timeout | Timeout in seconds for fetching resources | float | 10.0 |
 |gpu | Use GPU renderer instead of CPU renderer | bool | false |
 |http_headers | Headers sent when the CLI fetches the SOURCE HTML (CLI only) | hash | nil |
+|stdin | Read HTML content from stdin instead of a file (CLI only) | bool | false |
 
 
 ### Passing options to a Rails view template
