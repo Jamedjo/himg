@@ -1,5 +1,8 @@
 ## [Unreleased]
 
+
+## [0.0.12] - 2025-08-10
+
 - Himg::Renderer re-used between render calls. Allows us to cache font library loading and the multi-threading runtime.
 - Resolve race condition which sometimes prevented local resources from being processed.
 - CLI accepts input piped from stdin, e.g `echo '<h1>Hello</h1>' | himg screenshot output.png`
