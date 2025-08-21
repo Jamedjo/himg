@@ -134,6 +134,26 @@ respond_to do |format|
 end
 ```
 
+### Rails caching
+
+You can cache images to save re-generating them for later requests.
+
+To serve the cached response you'll need to use `send_data` to send the png data as binary content.
+
+```ruby
+format.png do
+  cache_key = ["opengraph-your-resource", id_or_data].join("/")
+
+  cached_image = Rails.cache.fetch(cache_key, expires_in: 30.days) do
+    render_to_string(template: 'your_resource/show', formats: [:himg])
+  end
+
+  send_data cached_image, type: 'image/png', disposition: 'inline'
+end
+```
+
+You can also speed up the render time by minimizing resources to fetch over the network, for example installing fonts locally or ensuring background images are read from disk as a file rather than fetched over http.
+
 # Supported HTML and CSS
 
 Himg supports a large subset of the HTML and CSS you'd need to get by, but not all elements or properties are supported.
